@@ -8,12 +8,13 @@ class ReactionRoles(commands.Cog):
 
     @commands.command()
     async def setup_reactions(self, ctx):
-        message = await ctx.send('''React to this message to get a role!<br>
-                                 Common entry: 🖥️<br>
-                                 Cyber Security: 🔐<br>
-                                 Game Development: 🎮<br>
-                                 AI and Machine Learning: 🤖<br>
-                                 Immersive Software Engineering: 🤓<br>''')
+        message = await ctx.send('''
+React to this message to get a role!
+Common entry: 🖥️
+Cyber Security: 🔐
+Game Development: 🎮
+AI and Machine Learning: 🤖
+Immersive Software Engineering: 🤓''')
 
         reactions = {
             '🖥️': '1283817589788770414',
@@ -34,14 +35,14 @@ class ReactionRoles(commands.Cog):
             if reaction.emoji not in reactions:
                 return
 
-            role_name = reactions[reaction.emoji]
-            role = discord.utils.get(ctx.guild.roles, name=role_name)
+            role_id = reactions[reaction.emoji]
+            role = discord.utils.get(ctx.guild.roles, id=role_id)
             if role:
                 member = ctx.guild.get_member(user.id)
                 if member:
                     await member.add_roles(role)
 
-        # Register the reaction event listener
+
         self.bot.event(check_reaction)
 
     @commands.Cog.listener()
@@ -54,11 +55,9 @@ class ReactionRoles(commands.Cog):
         if reaction.emoji not in self.reactions:
             return
 
-        role_name = self.reactions[reaction.emoji]
-        role = discord.utils.get(reaction.message.guild.roles, name=role_name)
-        if role:
-            member = reaction.message.guild.get_member(user.id)
-            if member:
+        role_id = self.reactions[reaction.emoji]
+        if role := discord.utils.get(reaction.message.guild.roles, name=role_id):
+            if member := reaction.message.guild.get_member(user.id):
                 await member.add_roles(role)
 
 
