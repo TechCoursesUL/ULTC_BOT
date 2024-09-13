@@ -7,6 +7,11 @@ import webserver
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
 
+@bot.command(name="sync")
+async def sync(ctx):
+    synced = await bot.tree.sync()
+    print(f"{len(synced)} command(s) synced")
+
 
 async def load():
     for filename in os.listdir("./cogs"):
