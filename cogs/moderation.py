@@ -8,7 +8,7 @@ class Moderation(commands.Cog):
         self.bot = bot
     
     
-    @app_commands.command(name="getroles", description="responds with your roles (slash commands test)")
+    @commands.command(description="responds with your roles (slash commands test)")
     async def getroles(self, interaction: discord.Interaction):
         await interaction.response.send_message( str(interaction.user.roles) , ephemeral= True)
     
