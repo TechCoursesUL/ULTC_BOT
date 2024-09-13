@@ -17,7 +17,6 @@ async def main():
     async with bot:
         await load()
         await bot.start(os.getenv('TOKEN'))
-        synced = await bot.tree.sync()
         print(f"{len(synced)} slash command(s) synced")
 
 
