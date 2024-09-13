@@ -15,13 +15,19 @@ class General(commands.Cog):
         print(f"{self.bot.user.name} is online.")
 
     @commands.command()
-    async def test(self, ctx):
-        await ctx.send("idk lol?")
+    async def version(self, ctx):
+        version = None
+        try:
+            version = open('version.txt').read().strip()
+        except FileNotFoundError:
+            version = "Version file not found"
+        await ctx.send(f"bot currently running on branch: {version}")
     
     @tasks.loop(seconds=30)
     async def heartbeat(self):
         request = requests.get("https://ultc-bot.onrender.com/")
         print(request.text)
+    
 
 
 async def setup(bot):
