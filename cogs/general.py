@@ -12,6 +12,9 @@ class General(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
+        synced = await self.bot.tree.sync()
+        print(f"{len(synced)} slash command(s) synced")
+        
         print(f"{self.bot.user.name} is online.")
 
     @commands.command()
