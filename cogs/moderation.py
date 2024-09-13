@@ -9,8 +9,7 @@ class Moderation(commands.Cog):
     
     
     @app_commands.command(name="getroles", description="responds with your roles (slash commands test)")
-    @app_commands.checks.has_role(1284246744800039055) #"ModeratorPerms" role, placeholder until proper role system is developed
-    async def kick(self, interaction:discord.Interaction):
+    async def getroles(self, interaction:discord.Interaction):
         await interaction.response.send_message( str(interaction.user.roles) , ephemeral= True)
     
     
