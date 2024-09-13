@@ -9,7 +9,8 @@ class ReactionRoles(commands.Cog):
             '🔐': '1283820720128000120',
             '🎮': '1283820769662603285',
             '🤖': '1283820892698312858',
-            '🤓': '1283820845625639005'
+            '🤓': '1283820845625639005',
+            '💾': '1283820666830983258'
         }
 
     @commands.command()
@@ -20,7 +21,8 @@ Common entry: 🖥️
 Cyber Security: 🔐
 Game Development: 🎮
 AI and Machine Learning: 🤖
-Immersive Software Engineering: 🤓''')
+Immersive Software Engineering: 🤓
+Computer Systems: 💾''')
 
         for emoji in self.reactions:
             await message.add_reaction(emoji)
