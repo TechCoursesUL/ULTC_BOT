@@ -16,6 +16,7 @@ class General(commands.Cog):
     
     @commands.command()
     async def sync(self, ctx):
+        await ctx.send("Starting sync...")
         synced = await self.bot.tree.sync()
         await ctx.send(f"{synced} slash command(s) synced")
 

@@ -17,7 +17,6 @@ async def main():
     async with bot:
         await load()
         await bot.start(os.getenv('TOKEN'))
-        print(f"{len(synced)} slash command(s) synced")
 
 
 webserver.keep_alive()
