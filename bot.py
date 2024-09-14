@@ -1,4 +1,3 @@
-
 import discord
 from discord.ext import commands
 from dotenv import load_dotenv
@@ -7,7 +6,6 @@ import asyncio
 import webserver
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
-
 
 async def load():
     for filename in os.listdir("./cogs"):
@@ -19,6 +17,7 @@ async def main():
     async with bot:
         await load()
         await bot.start(os.getenv('TOKEN'))
+    await bot.tree.sync()
 
 
 webserver.keep_alive()
