@@ -41,14 +41,14 @@ pip install -r requirements.txt
 ```
 ### 4. Configure the Bot
 
-Before running the bot, make sure you create a .env file in the root of the project to store your bot token and other configuration secrets.
+Before running the bot, make sure you create a .env file in the root of the project to store your bot token and other configuration secrets and place the ULTCDB private key JSON at /backend/DBAUTH.json
 
 Create a .env file and add your bot token:
 ```
 DISCORD_TOKEN=your-bot-token-here
 ```
 Replace your-bot-token-here with the actual token.
-### 5. Run the Bot
+### 6. Run the Bot
 
 Now you’re ready to run the bot! With the virtual environment still active, use:
 
@@ -56,7 +56,7 @@ Now you’re ready to run the bot! With the virtual environment still active, us
 python bot.py
 ```
 
-### 6. Deactivating the Virtual Environment
+### 7. Deactivating the Virtual Environment
 
 ```
 deactivate
