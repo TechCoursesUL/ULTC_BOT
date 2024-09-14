@@ -1,5 +1,6 @@
 import firebase_admin
 import json
+import os
 from firebase_admin import db
 
 bannedUserExample = json.dumps(
@@ -15,7 +16,7 @@ bannedUserExample = json.dumps(
 
 class ULTCDB:
     def __init__(self) -> None:
-        self.cred_obj = firebase_admin.credentials.Certificate("./DBAUTH.json")
+        self.cred_obj = firebase_admin.credentials.Certificate(os.getenv('DBAUTH'))
         self.app = firebase_admin.initialize_app(self.cred_obj, {'databaseURL' :'https://ultcdb-default-rtdb.europe-west1.firebasedatabase.app/'})
         
     def GetBannedUsers(self) -> json:
