@@ -1,6 +1,7 @@
 import discord
 from discord.ext import commands
 
+
 class ReactionRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -12,20 +13,25 @@ class ReactionRoles(commands.Cog):
             '🤓': '1283820845625639005',
             '💾': '1283820666830983258'
         }
+        self.static_message_id = 1284648528395636737
 
     @commands.command()
     async def setup_reactions(self, ctx):
-        message = await ctx.send('''
-React to this message to get a role!
-Common entry: 🖥️
-Cyber Security: 🔐
-Game Development: 🎮
-AI and Machine Learning: 🤖
-Immersive Software Engineering: 🤓
-Computer Systems: 💾''')
+        try:
+            channel = ctx.channel
+            message = await channel.fetch_message(self.static_message_id)
 
-        for emoji in self.reactions:
-            await message.add_reaction(emoji)
+            for emoji in self.reactions:
+                await message.add_reaction(emoji)
+
+            await ctx.send("Reactions have been added to the static message.")
+
+        except discord.NotFound:
+            await ctx.send("Message not found. Please check the static message ID.")
+        except discord.Forbidden:
+            await ctx.send("I do not have permission to fetch or react to this message.")
+        except discord.HTTPException as e:
+            await ctx.send(f"An error occurred: {e}")
 
     @commands.Cog.listener()
     async def on_reaction_add(self, reaction, user):
@@ -42,14 +48,13 @@ Computer Systems: 💾''')
             return
 
         role_id = self.reactions[reaction.emoji]
-        if role := discord.utils.get(
-            reaction.message.guild.roles, id=int(role_id)
-        ):
+        if role := discord.utils.get(reaction.message.guild.roles, id=int(role_id)):
             if member := reaction.message.guild.get_member(user.id):
                 if add_role:
                     await member.add_roles(role)
                 else:
                     await member.remove_roles(role)
+
 
 async def setup(bot):
     await bot.add_cog(ReactionRoles(bot))
