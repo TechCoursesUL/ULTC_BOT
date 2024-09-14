@@ -7,8 +7,7 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.index = 0
-        self.heartbeat.start()
-        
+        self.heartbeat.start()     
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -31,7 +30,7 @@ class General(commands.Cog):
     
     @tasks.loop(seconds=30)
     async def heartbeat(self):
-        request = requests.get("https://ultc-bot.onrender.com/")
+        request = requests.get("https://ultc-botdev.onrender.com/")
         print(request.text)
     
 
