@@ -23,10 +23,7 @@ class Moderation(commands.Cog):
         }
     
     def ValidatePermissions(self, command: str, userRoles) -> bool:
-        for Role in self.CommandPerms[command]:
-            if userRoles.__contains__(Role):
-                return True
-        return False
+        return any(userRoles.__contains__(Role) for Role in self.CommandPerms[command])
     
     @commands.Cog.listener()
     async def on_command_error(ctx, error):
