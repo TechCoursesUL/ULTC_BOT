@@ -2,6 +2,17 @@ import firebase_admin
 import json
 from firebase_admin import db
 
+bannedUserExample = json.dumps(
+    {
+        192937297382: 
+        {
+            "displayname": "John Doe", #username when banned
+            "endtime": 345345353434534, #unix time when ban ends
+            "reason": "touched brown thomas", #banreason
+        }       
+    }
+)
+
 class ULTCDB:
     def __init__(self) -> None:
         self.cred_obj = firebase_admin.credentials.Certificate("./DBAUTH.json")
@@ -13,20 +24,9 @@ class ULTCDB:
         ref = db.reference("server/users/bannedusers")
         return ref.get()
     
-    def SetBannedUsers(self, bannedUsers: json) -> bool:
+    def SetBannedUsers(self, bannedUsers: json):
         ref = db.reference("server/users/bannedusers")
-        
         ref.set(bannedUsers)
-
-print(ULTCDB().GetBannedUsers())
-userExample = json.dumps(
-    {
-        -1: #DiscordUserID
-            10000000000000, #unix time which indicates when ban ends
-        -2: 100000000005488,
-        
-    }
-)
 
 
 

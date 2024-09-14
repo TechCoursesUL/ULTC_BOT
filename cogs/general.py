@@ -13,6 +13,13 @@ class General(commands.Cog):
     async def on_ready(self):
         print(f"{self.bot.user.name} is online.")
     
+    @commands.Cog.listener()
+    async def on_member_join(self, member):
+        if welcome_channel := discord.utils.get(
+            member.guild.text_channels, name='welcome'
+        ):
+            await welcome_channel.send(f"Welcome to the server, {member.mention}! please checkout the rules and grab roles.")
+    
     @commands.command()
     async def sync(self, ctx):
         await ctx.send("Starting sync...")
