@@ -42,8 +42,8 @@ class Moderation(commands.Cog):
         
     @app_commands.command(description="ban a user")
     async def ban(self, interaction: discord.Interaction, user: discord.Member, hourDuration: int):
-        if self.ValidatePermissions("kick", interaction.user.roles):
-            await interaction.response.send_message(f"successfully kicked {user.name} (lie)")
+        if self.ValidatePermissions("ban", interaction.user.roles):
+            await interaction.response.send_message(f"successfully banned {user.name} (lie)")
         else: interaction.response.send_message("can't do that for ya dawg")        
         
     
