@@ -48,7 +48,7 @@ Create a .env file and add your bot token:
 DISCORD_TOKEN=your-bot-token-here
 ```
 Replace your-bot-token-here with the actual token.
-### 6. Run the Bot
+### 5. Run the Bot
 
 Now you’re ready to run the bot! With the virtual environment still active, use:
 
@@ -56,7 +56,7 @@ Now you’re ready to run the bot! With the virtual environment still active, us
 python bot.py
 ```
 
-### 7. Deactivating the Virtual Environment
+### 6. Deactivating the Virtual Environment
 
 ```
 deactivate
