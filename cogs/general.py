@@ -37,7 +37,7 @@ class General(commands.Cog):
 
     @tasks.loop(seconds=30)
     async def heartbeat(self):
-        request = requests.get("https://ultc-botdev.onrender.com/")
+        request = requests.get("https://ultc-bot.onrender.com")
         print(request.text)
 
     @commands.Cog.listener()
