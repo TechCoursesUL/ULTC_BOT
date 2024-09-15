@@ -43,14 +43,14 @@ class Moderation(commands.Cog):
     def HandleErrors(f):
         if asyncio.iscoroutinefunction(f):
             @functools.wraps(f)
-            async def funct(*args):
+            async def funct(*args, **kwargs):
                 try:
-                    return await f(*args)
+                    return await f(*args, **kwargs)
                 except Exception as e:
                     await args[1].response.send_message(f"Command Failed- {e}")  
                     
             funct.__name__ = f.__name__
-            return funct
+            return app_commands.command(funct)
         else:
             @functools.wraps(f)
             def funct(*args, **kwargs):
@@ -60,7 +60,7 @@ class Moderation(commands.Cog):
                     args[1].response.send_message(f"Command Failed- {e}")  
                     
             funct.__name__ = f.__name__
-            return funct
+            return app_commands.command(funct)
 
     async def SendResponse(self, interaction: discord.Interaction, message: str):
         interaction.response.send_message(message)
@@ -102,7 +102,7 @@ class Moderation(commands.Cog):
             return await ctx.send("The dawg doesn't exist dawg")   
         
     
-    @app_commands.command(description="kick a user")
+
     @HandleErrors
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
@@ -110,7 +110,7 @@ class Moderation(commands.Cog):
         await interaction.response.send_message(f"{logMessage} kicked {target.global_name} for {reason}")
         
     
-    @app_commands.command(description="ban a user")
+
     @HandleErrors
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
