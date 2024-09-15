@@ -52,8 +52,7 @@ class Moderation(commands.Cog):
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
-        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[1:])  # from ctx onward
-        return decorator
+        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values()))
     
 
     async def SendResponse(self, interaction: discord.Interaction, message: str):
