@@ -102,6 +102,7 @@ class Moderation(commands.Cog):
         logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
         
         await interaction.response.send_message(f"{logMessage} kicked {target.global_name} for {reason}")
+        return
         
     
     @app_commands.command(name="ban", description="ban a user")
@@ -110,6 +111,7 @@ class Moderation(commands.Cog):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
             
         await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayDuration} day(s) for {reason}")
+        return
         
                 
     #@app_commands.command(description="Get a list of all banned users")
@@ -118,6 +120,7 @@ class Moderation(commands.Cog):
     #    await self.ValidatePermission("GetBannedUsers", interaction.user)
     #
     #   await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
+    #   return
     
             
             
