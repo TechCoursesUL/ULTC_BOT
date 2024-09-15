@@ -96,7 +96,7 @@ class Moderation(commands.Cog):
             return await ctx.send("The dawg doesn't exist dawg")   
         
     
-    @app_commands.command(description="kick a user")
+    @app_commands.command(name="kick", description="kick a user")
     @HandleErrors
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
@@ -104,12 +104,12 @@ class Moderation(commands.Cog):
         await interaction.response.send_message(f"{logMessage} kicked {target.global_name} for {reason}")
         
     
-    #@app_commands.command(description="ban a user")
-    #@HandleErrors
-    #async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
-    #    logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
+    @app_commands.command(name="ban", description="ban a user")
+    @HandleErrors
+    async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
+        logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
             
-    #    await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayDuration} day(s) for {reason}")
+        await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayDuration} day(s) for {reason}")
         
                 
     #@app_commands.command(description="Get a list of all banned users")
