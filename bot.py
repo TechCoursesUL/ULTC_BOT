@@ -8,11 +8,11 @@ from dotenv import load_dotenv
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
 
-@bot.command()
-async def oldsync(ctx):
+@bot.command(pass_context=True)
+async def sync(ctx):
     try:
         await ctx.send("Starting sync...")
-        synced = await bot.tree.sync(guild=1283786089810755584)
+        synced = await bot.tree.sync(ctx.guild.id)
         await ctx.send(f"{synced} slash command(s) synced")
     except Exception as e:
         await ctx.send(f"An Error Occurred While Syncing: {e}")
