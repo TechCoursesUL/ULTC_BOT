@@ -11,12 +11,12 @@ load_dotenv()
 @bot.command()
 async def sync(ctx):
     await ctx.send("Starting sync...")
-    synced = await bot.tree.sync()
+    synced = await bot.tree.sync(guild=1283786089810755584)
     await ctx.send(f"{synced} slash command(s) synced")
 @bot.command()
 async def testsync(ctx):
     await ctx.send("Starting sync...")
-    await ctx.send(f"{bot.tree.sync()}")
+    await ctx.send(f"{bot.tree.sync(guild=1283786089810755584)}")
 
 async def load():
     for filename in os.listdir("./cogs"):
