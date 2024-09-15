@@ -4,14 +4,15 @@ from discord.ext import commands
 class ReactionRole(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.message_id = 1284648528395636737
+        self.message_id = 1284937490800578632
         self.emoji_role_map = {
             '🖥️': 1283817589788770414,
             '🔐': 1283820720128000120,
             '🎮': 1283820769662603285,
             '🤖': 1283820892698312858,
             '🤓': 1283820845625639005,
-            '💾': 1283820666830983258
+            '💾': 1283820666830983258,
+            '🎉': 1284937266308976770,
         }
 
     @commands.Cog.listener()
