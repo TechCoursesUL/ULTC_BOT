@@ -43,9 +43,9 @@ class Moderation(commands.Cog):
     def HandleErrors(f):
         if asyncio.iscoroutinefunction(f):
             @functools.wraps(f)
-            async def funct(*args, **kwargs):
+            async def funct(*args):
                 try:
-                    return await f(*args, **kwargs)
+                    return await f(*args)
                 except Exception as e:
                     await args[1].response.send_message(f"Command Failed- {e}")  
                     
