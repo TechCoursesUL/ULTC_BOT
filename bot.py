@@ -9,14 +9,14 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
 
 @bot.command()
-async def sync(ctx):
-    await ctx.send("Starting sync...")
-    synced = await bot.tree.sync(guild=1283786089810755584)
-    await ctx.send(f"{synced} slash command(s) synced")
+async def oldsync(ctx):
+    try:
+        await ctx.send("Starting sync...")
+        synced = await bot.tree.sync(guild=1283786089810755584)
+        await ctx.send(f"{synced} slash command(s) synced")
+    except Exception as e:
+        await ctx.send(f"An Error Occurred While Syncing: {e}")
 @bot.command()
-async def testsync(ctx):
-    await ctx.send("Starting sync...")
-    await ctx.send(f"{bot.tree.sync(guild=1283786089810755584)}")
 
 async def load():
     for filename in os.listdir("./cogs"):
