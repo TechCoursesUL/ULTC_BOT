@@ -44,7 +44,6 @@ class Moderation(commands.Cog):
         self.db = ULTCDB()
     
     def HandleErrors(f):
-        @functools.wraps(f)
         async def decorator(ctx, *args, **kwargs):
             try:
                 await f(ctx, *args, **kwargs)
