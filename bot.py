@@ -8,12 +8,12 @@ from dotenv import load_dotenv
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
 
-@commands.command()
+@bot.command()
 async def sync(ctx):
     await ctx.send("Starting sync...")
     synced = await bot.tree.sync()
     await ctx.send(f"{synced} slash command(s) synced")
-@commands.command()
+@bot.command()
 async def testsync(ctx):
     await ctx.send("Starting sync...")
     await ctx.send(f"{bot.tree.sync()}")
