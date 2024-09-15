@@ -104,12 +104,12 @@ class Moderation(commands.Cog):
         await interaction.response.send_message(f"{logMessage} kicked {target.global_name} for {reason}")
         
     
-    #@app_commands.command(description="ban a user")
+    @app_commands.command(description="ban a user")
     #@HandleErrors
-    #async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
-    #    logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
+    async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
+        logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
             
-    #    await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayDuration} day(s) for {reason}")
+        await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayDuration} day(s) for {reason}")
         
                 
     #@app_commands.command(description="Get a list of all banned users")
