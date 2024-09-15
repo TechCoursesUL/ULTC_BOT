@@ -82,7 +82,7 @@ class Moderation(commands.Cog):
             if error == None:
                 return "Successfully"
             
-            elif await self._ValidatePermission("punishprotectionbypass"):
+            elif await self._ValidatePermission("punishprotectionbypass", commandUser):
                 return "User is protected- but your role allows a bypass. Successfully" #TODO: add confirmation prompt before bypass
             
         if not error:
