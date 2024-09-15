@@ -1,6 +1,8 @@
 import discord
 from discord.ext import commands
 import psutil
+import time
+import datetime
 
 
 class General(commands.Cog):
@@ -36,11 +38,19 @@ class General(commands.Cog):
 
     @commands.command()
     async def load(self, ctx):
-        embed = discord.Embed(title="Current Server Load", color=0x33d17a)
-        embed.add_field(name="CPU: ", value="cpu", inline=True)
-        embed.add_field(name="RAM:", value="memory", inline=True)
-        embed.add_field(name="UPTIME:", value="uptime", inline=True)
-        embed.add_field(name="DISK:", value="disk", inline=True)
+        boot_time = psutil.boot_time()
+        uptime_seconds = time.time() - boot_time
+        uptime_str = str(datetime.timedelta(seconds=int(uptime_seconds)))
+        embed = discord.Embed(
+            title="📊 Current Server Load",
+            color=0x33d17a,
+            description="Here's the current status of the server's performance."
+        )
+        embed.add_field(name="**🖥️ CPU Usage**", value=f"`{psutil.cpu_percent()}%`", inline=False)
+        embed.add_field(name="**💾 RAM Usage**", value=f"`{psutil.virtual_memory().percent}%`", inline=False)
+        embed.add_field(name="**🕒 Uptime**", value=f"`{uptime_str}`", inline=False)
+        embed.add_field(name="**📂 Disk Usage**", value=f"`{psutil.disk_usage('/').percent}%`", inline=False)
+        embed.set_footer(text=f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         await ctx.send(embed=embed)
 
     @commands.command()
