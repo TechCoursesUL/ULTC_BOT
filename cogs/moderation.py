@@ -97,7 +97,7 @@ class Moderation(commands.Cog):
         
     
     @app_commands.command(description="kick a user")
-    #@HandleErrors
+    @HandleErrors
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
         
