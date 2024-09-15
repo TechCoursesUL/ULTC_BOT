@@ -6,7 +6,6 @@ class General(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.index = 0
-        self.heartbeat.start()
 
     @commands.Cog.listener()
     async def on_ready(self):
