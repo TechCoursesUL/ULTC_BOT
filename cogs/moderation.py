@@ -48,11 +48,11 @@ class Moderation(commands.Cog):
             try:
                 await f(ctx, *args, **kwargs)
             except Exception as e:
-                await args[0].response.send_message(f"(decorator) Command Failed- {e}")  
+                await args[1].response.send_message(f"(decorator) Command Failed- {e}")  
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
-        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values()))
+        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[0:])
         return decorator
     
 
