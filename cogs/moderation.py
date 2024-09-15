@@ -52,7 +52,7 @@ class Moderation(commands.Cog):
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
-        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[0:])
+        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[1:])
         return decorator
     
 
@@ -106,7 +106,6 @@ class Moderation(commands.Cog):
         
     
     @app_commands.command(name="ban", description="ban a user")
-    @HandleErrors
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
             

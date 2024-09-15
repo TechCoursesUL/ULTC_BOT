@@ -29,7 +29,7 @@ class General(commands.Cog):
             version = "Version file not found"
         await ctx.send(f"bot currently running on version: {version}")
 
-    @tasks.loop(seconds=30)
+    @tasks.loop(seconds=10)
     async def heartbeat(self):
         request = requests.get("https://ultc-botdev.onrender.com/")
         print(request.text)
