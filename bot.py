@@ -16,7 +16,6 @@ async def oldsync(ctx):
         await ctx.send(f"{synced} slash command(s) synced")
     except Exception as e:
         await ctx.send(f"An Error Occurred While Syncing: {e}")
-@bot.command()
 
 async def load():
     for filename in os.listdir("./cogs"):
