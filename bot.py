@@ -9,14 +9,14 @@ bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
 
 @commands.command()
-async def sync(self, ctx):
-    ctx.send("Starting sync...")
-    synced = await self.bot.tree.sync()
-    ctx.send(f"{synced} slash command(s) synced")
-@commands.command()
-async def testsync(self, ctx):
+async def sync(ctx):
     await ctx.send("Starting sync...")
-    await ctx.send(f"{self.bot.tree.sync()}")
+    synced = await bot.tree.sync()
+    await ctx.send(f"{synced} slash command(s) synced")
+@commands.command()
+async def testsync(ctx):
+    await ctx.send("Starting sync...")
+    await ctx.send(f"{bot.tree.sync()}")
 
 async def load():
     for filename in os.listdir("./cogs"):
