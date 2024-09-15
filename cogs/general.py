@@ -1,6 +1,5 @@
 import discord
-from discord.ext import commands, tasks
-import requests
+from discord.ext import commands
 
 
 class General(commands.Cog):
@@ -56,10 +55,6 @@ class General(commands.Cog):
     async def purge(self, ctx, amount: int):
         await ctx.channel.purge(limit=amount)
         await ctx.send(f"Successfully deleted {amount} messages")
-
-    @tasks.loop(seconds=30)
-    async def heartbeat(self):
-        requests.get("https://ultc-bot.onrender.com")
 
     @commands.Cog.listener()
     async def on_member_join(self, member):
