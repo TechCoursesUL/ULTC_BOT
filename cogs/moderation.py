@@ -42,7 +42,6 @@ class Moderation(commands.Cog):
     
     def HandleErrors(f):
         if asyncio.iscoroutinefunction(f):
-            @functools.wraps(f)
             async def funct(*args, **kwargs):
                 try:
                     return await f(*args, **kwargs)
