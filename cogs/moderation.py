@@ -3,6 +3,9 @@ import firebase_admin
 import functools
 import random
 import asyncio
+
+import inspect
+
 from discord.ext import commands
 from discord import app_commands, Interaction
 from db import ULTCDB
@@ -41,26 +44,18 @@ class Moderation(commands.Cog):
         self.db = ULTCDB()
     
     def HandleErrors(f):
-        if asyncio.iscoroutinefunction(f):
-            @functools.wraps(f)
-            async def funct(*args, **kwargs):
-                try:
-                    return await f(*args, **kwargs)
-                except Exception as e:
-                    await args[1].response.send_message(f"Command Failed- {e}")  
-                    
-            funct.__name__ = f.__name__
-            return app_commands.command(funct)
-        else:
-            @functools.wraps(f)
-            def funct(*args, **kwargs):
-                try:
-                    return f(*args, **kwargs)
-                except Exception as e:
-                    args[1].response.send_message(f"Command Failed- {e}")  
-                    
-            funct.__name__ = f.__name__
-            return app_commands.command(funct)
+        @functools.wraps(f)
+        async def decorator(ctx, *args, **kwargs):
+            try:
+                await f(ctx, *args, **kwargs)
+            except Exception as e:
+                await args[1].response.send_message(f"Command Failed- {e}")  
+                
+        decorator.__name__ = f.__name__
+        sig = inspect.signature(f)
+        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[1:])  # from ctx onward
+        return decorator
+    
 
     async def SendResponse(self, interaction: discord.Interaction, message: str):
         interaction.response.send_message(message)
@@ -102,7 +97,7 @@ class Moderation(commands.Cog):
             return await ctx.send("The dawg doesn't exist dawg")   
         
     
-
+    @app_commands.command(description="kick a user")
     @HandleErrors
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
@@ -110,7 +105,7 @@ class Moderation(commands.Cog):
         await interaction.response.send_message(f"{logMessage} kicked {target.global_name} for {reason}")
         
     
-
+    @app_commands.command(description="ban a user")
     @HandleErrors
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
