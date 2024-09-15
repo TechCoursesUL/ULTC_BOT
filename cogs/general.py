@@ -19,16 +19,6 @@ class General(commands.Cog):
             member.guild.text_channels, name='welcome'
         ):
             await welcome_channel.send(f"Welcome to the server, {member.mention}! please checkout the rules and grab roles.")
-    
-    @commands.command()
-    async def sync(self, ctx):
-        await ctx.send("Starting sync...")
-        synced = await self.bot.tree.sync()
-        await ctx.send(f"{synced} slash command(s) synced")
-    @commands.command()
-    async def testsync(self, ctx):
-        await ctx.send("Starting sync...")
-        await ctx.send(f"{self.bot.tree.sync()}")
 
     @commands.command()
     async def version(self, ctx):
