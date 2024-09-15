@@ -1,0 +1,5 @@
+*.env
+env/
+cogs/__pycache__
+__pycache__
+backend/DBAUTH.json
