@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+import psutil
 
 
 class General(commands.Cog):
@@ -32,6 +33,15 @@ class General(commands.Cog):
         except FileNotFoundError:
             version = "Version file not found"
         await ctx.send(f"bot currently running on version: {version}")
+
+    @commands.command()
+    async def load(self, ctx):
+        embed = discord.Embed(title="Current Server Load", color=0x33d17a)
+        embed.add_field(name="CPU: ", value="cpu", inline=True)
+        embed.add_field(name="RAM:", value="memory", inline=True)
+        embed.add_field(name="UPTIME:", value="uptime", inline=True)
+        embed.add_field(name="DISK:", value="disk", inline=True)
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def create_embed(self, ctx, *, args=None):
