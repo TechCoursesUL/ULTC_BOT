@@ -86,7 +86,7 @@ class Moderation(commands.Cog):
                 await interaction.channel.send(f"{targetUser.name} is protected from /{command}. Your permission level allows a bypass\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in {timersecs} seconds-]")
                 
                 def check(m):
-                    return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass")
+                    return (m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass"))
                 try:
                     response = await self.bot.wait_for('message', check=check, timeout=timersecs)
                     if response == "!confirmbypass":
