@@ -117,7 +117,7 @@ class Moderation(commands.Cog):
     async def getbannedusers(self, interaction: discord.Interaction):
         await self.ValidatePermission("GetBannedUsers", interaction.user)
     
-        await interaction.response.send_message(f"Banned Users: {await self.db.GetBannedUsers()}")
+        await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
     
             
             
