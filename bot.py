@@ -12,7 +12,7 @@ load_dotenv()
 async def sync(ctx):
     try:
         await ctx.send("Starting sync...")
-        synced = await bot.tree.sync(guild=ctx.guild)
+        synced = await bot.tree.sync(guild=discord.Object(id=1283786089810755584))
         await ctx.send(f"{synced} slash command(s) synced")
     except Exception as e:
         await ctx.send(f"An Error Occurred While Syncing: {e}")
