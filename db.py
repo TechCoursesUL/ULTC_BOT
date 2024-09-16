@@ -24,8 +24,7 @@ class ULTCDB:
         print(f"getting banned users from db...")
         
         ref = db.reference("server/users/bannedusers")
-        bannedusers = ref.get()
-        return json.dumps(bannedusers)
+        return ref.get()
     
     async def SetBannedUsers(self, bannedUsers: json):
         ref = db.reference("server/users/bannedusers")
