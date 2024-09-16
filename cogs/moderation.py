@@ -46,7 +46,7 @@ class Moderation(commands.Cog):
     def HandleErrors(f):
         async def decorator(*args, **kwargs):
             try:
-                return await f(*args, **kwargs)
+                return f(*args, **kwargs)
             except Exception as e:
                 await args[1].response.send_message(f"Command Failed- {e}")  
                 
