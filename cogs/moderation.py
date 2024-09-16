@@ -48,7 +48,7 @@ class Moderation(commands.Cog):
             try:
                 await f(*args, **kwargs)
             except Exception as e:
-                await args[1].response.send_message(f"(decorator) Command Failed- {e}")  
+                await args[1].response.send_message(f"Command Failed- {e}")  
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
@@ -96,7 +96,7 @@ class Moderation(commands.Cog):
             return await ctx.send("The dawg doesn't exist dawg")   
         
     
-    @app_commands.command(name="kick", description="kick a user")
+    @app_commands.command(description="kick a user")
     @HandleErrors
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
@@ -105,7 +105,7 @@ class Moderation(commands.Cog):
         return
         
     
-    @app_commands.command(name="ban", description="ban a user")
+    @app_commands.command(description="ban a user")
     @HandleErrors
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayDuration: int):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
