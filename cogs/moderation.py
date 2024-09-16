@@ -43,12 +43,13 @@ class Moderation(commands.Cog):
         }
         self.db = ULTCDB()
     
-    def HandleErrors(f):
+    def _ErrorHandler(f):
         async def decorator(*args, **kwargs):
             try:
+                await args[1].interaction.response.defer()
                 return await f(*args, **kwargs)
             except Exception as e:
-                await args[1].response.send_message(f"Command Failed- {e}")  
+                await args[1].followup.send(f"Command Failed- {e}")  
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
@@ -82,14 +83,13 @@ class Moderation(commands.Cog):
             elif await self._ValidatePermission("punishprotectionbypass", interaction.user):
                 timersecs = 15
                 
-                await interaction.response.defer()
                 await interaction.channel.send(f"{targetUser.name} is protected from /{command}. Your permission level allows a bypass\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in {timersecs} seconds-]")
                 
                 def check(m):
                     return (m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass"))
                 try:
                     response = await self.bot.wait_for('message', check=check, timeout=timersecs)
-                    if response == "!confirmbypass":
+                    if response.content == "!confirmbypass":
                         return True
                     else:
                         raise ConnectionAbortedError("Command Cancelled")
@@ -105,31 +105,31 @@ class Moderation(commands.Cog):
     @commands.Cog.listener()
     async def on_command_error(ctx, error):
         if isinstance(error, commands.errors.MemberNotFound):
-            return await ctx.send("The dawg doesn't exist dawg")   
+            return await ctx.send("Member Not Found")   
         
     
     @app_commands.command(description="kick a user")
-    @HandleErrors
+    @_ErrorHandler
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         logMessage = await self.ValidatePunishPermissions("kick", interaction, target)
         
-        await interaction.response.send_message(f"Kicked {target.global_name} for {reason}")
+        await interaction.followup.send(f"Kicked {target.global_name} for {reason}")
         
     
     @app_commands.command(description="ban a user")
-    @HandleErrors
+    @_ErrorHandler
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
             
-        await interaction.response.send_message(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
+        await interaction.followup.send(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
         
                 
     @app_commands.command(description="Get a list of all banned users")
-    @HandleErrors
+    @_ErrorHandler
     async def getbannedusers(self, interaction: discord.Interaction):
         await self.ValidatePermission("getbannedusers", interaction.user)
     
-        await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
+        await interaction.followup.send(f"Banned Users: {self.db.GetBannedUsers()}")
     
             
             
