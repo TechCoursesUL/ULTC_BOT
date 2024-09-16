@@ -46,9 +46,9 @@ class Moderation(commands.Cog):
     def HandleErrors(f):
         async def decorator(*args, **kwargs):
             try:
-                return f(*args, **kwargs)
+                await f(*args, **kwargs)
             except Exception as e:
-                args[1].response.send_message(f"Command Failed- {e}")  
+                await args[1].response.send_message(f"Command Failed- {e}")  
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
@@ -117,7 +117,7 @@ class Moderation(commands.Cog):
     async def getbannedusers(self, interaction: discord.Interaction):
         await self.ValidatePermission("GetBannedUsers", interaction.user)
     
-        await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
+        await interaction.response.send_message(f"Banned Users: {await self.db.GetBannedUsers()}")
     
             
             
