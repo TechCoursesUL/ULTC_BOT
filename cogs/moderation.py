@@ -48,7 +48,7 @@ class Moderation(commands.Cog):
             try:
                 return f(*args, **kwargs)
             except Exception as e:
-                await args[1].response.send_message(f"Command Failed- {e}")  
+                args[1].response.send_message(f"Command Failed- {e}")  
                 
         decorator.__name__ = f.__name__
         sig = inspect.signature(f)
