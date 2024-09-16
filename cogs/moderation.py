@@ -66,7 +66,7 @@ class Moderation(commands.Cog):
             
         return False
     async def ValidatePermission(self, permission: str, commandUser: discord.Member) -> bool:        
-        if self.ValidatePermission(permission, commandUser):
+        if await self._ValidatePermission(permission, commandUser):
             return True
         else:    
             raise PermissionError("Missing Permissions")
