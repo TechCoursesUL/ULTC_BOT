@@ -36,7 +36,7 @@ class Moderation(commands.Cog):
                 1283864386305527930, # Founders
                 1284246744800039055, # ModerationPerms
             ],
-            "GetBannedUsers": [
+            "getbannedusers": [
                 1283864386305527930, # Founders
                 1284246744800039055, # ModerationPerms
             ]
@@ -55,9 +55,6 @@ class Moderation(commands.Cog):
         decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[1:])
         return decorator
     
-
-    async def SendResponse(self, interaction: discord.Interaction, message: str):
-        interaction.response.send_message(message)
         
     async def _ValidatePermission(self, permission: str, commandUser: discord.Member) -> bool:        
         for role in self.Perms[permission]:
@@ -72,19 +69,33 @@ class Moderation(commands.Cog):
             raise PermissionError("Missing Permissions")
                          
     
-    async def ValidatePunishPermissions(self, command: str, commandUser: discord.Member, targetUser: discord.Member) -> str:
+    async def ValidatePunishPermissions(self, command: str,  interaction: discord.Interaction, targetUser: discord.Member) -> bool:
         error = None
         
         if await self._ValidatePermission("punishprotection", targetUser):
-            error = PermissionError("User is protected")
+            error = PermissionError(f"{targetUser.global_name} is protected from /{command}")
         
-        if await self._ValidatePermission(command, commandUser):
+        if await self._ValidatePermission(command, interaction.user):
             if error == None:
-                return "Successfully"
+                return True
             
-            elif await self._ValidatePermission("punishprotectionbypass", commandUser):
-                return "User is protected- but your role allows a bypass. Successfully" #TODO: add confirmation prompt before bypass
-            
+            elif await self._ValidatePermission("punishprotectionbypass", interaction.user):
+                timersecs = 15
+                await interaction.channel.send(f"{targetUser.global_name} is protected from /{command}- Your permission level allows a bypass.\nConfirm Bypass? << !confirmbypass <<?>> !cancelbypass >>\n[Auto-Cancels in {timersecs} seconds]")
+                
+                def check(m):
+                    return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass")
+
+                try:
+                    response = await self.bot.wait_for('message', check=check, timeout=timersecs)
+                    if response == "!confirmbypass":
+                        return True
+                    else:
+                        raise ConnectionAbortedError("Command Cancelled")
+                except asyncio.TimeoutError:
+                    raise TimeoutError("Command Auto-Cancelled")
+                
+                
         if not error:
             raise PermissionError("Missing Permissions")
         else:
@@ -99,9 +110,9 @@ class Moderation(commands.Cog):
     @app_commands.command(description="kick a user")
     @HandleErrors
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
-        logMessage = await self.ValidatePunishPermissions("kick", interaction.user, target)
+        logMessage = await self.ValidatePunishPermissions("kick", interaction, target)
         
-        await interaction.response.send_message(f"{logMessage} kicked {target.global_name} for {reason}")
+        await interaction.response.send_message(f"Kicked {target.global_name} for {reason}")
         
     
     @app_commands.command(description="ban a user")
@@ -109,13 +120,13 @@ class Moderation(commands.Cog):
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
         logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
             
-        await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayduration} day(s) for {reason}")
+        await interaction.response.send_message(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
         
                 
     @app_commands.command(description="Get a list of all banned users")
     @HandleErrors
     async def getbannedusers(self, interaction: discord.Interaction):
-        await self.ValidatePermission("GetBannedUsers", interaction.user)
+        await self.ValidatePermission("getbannedusers", interaction.user)
     
         await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
     
