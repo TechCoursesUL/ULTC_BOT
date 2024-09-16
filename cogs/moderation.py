@@ -73,7 +73,7 @@ class Moderation(commands.Cog):
         error = None
         
         if await self._ValidatePermission("punishprotection", targetUser):
-            error = PermissionError(f"{targetUser.global_name} is protected from /{command}")
+            error = PermissionError(f"{targetUser.name} is protected from /{command}")
         
         if await self._ValidatePermission(command, interaction.user):
             if error == None:
@@ -81,11 +81,12 @@ class Moderation(commands.Cog):
             
             elif await self._ValidatePermission("punishprotectionbypass", interaction.user):
                 timersecs = 15
-                await interaction.channel.send(f"{targetUser.global_name} is protected from /{command}- Your permission level allows a bypass.\nConfirm Bypass? << !confirmbypass <<?>> !cancelbypass >>\n[Auto-Cancels in {timersecs} seconds]")
+                
+                await interaction.response.defer()
+                await interaction.channel.send(f"{targetUser.name} is protected from /{command}. Your permission level allows a bypass\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in {timersecs} seconds-]")
                 
                 def check(m):
                     return m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass")
-
                 try:
                     response = await self.bot.wait_for('message', check=check, timeout=timersecs)
                     if response == "!confirmbypass":
