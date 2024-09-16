@@ -63,8 +63,7 @@ class FindARoom(commands.Cog):
             color=discord.Color.blue()
         )
         embed.add_field(name="Building", value=building_name, inline=False)
-        embed.add_field(name="Floor", value=f"Floor {
-                        floor_number}", inline=True)
+        embed.add_field(name="Floor", value=f"Floor {floor_number}", inline=True)
         embed.add_field(name="Room", value=f"Room {room_number}", inline=True)
         embed.add_field(name="Google link", value=f"{maps_link}", inline=False)
 
