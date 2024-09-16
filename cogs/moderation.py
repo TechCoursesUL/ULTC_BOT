@@ -44,9 +44,9 @@ class Moderation(commands.Cog):
         self.db = ULTCDB()
     
     def HandleErrors(f):
-        async def decorator(*args, **kwargs):
+        async def decorator(ctx, *args, **kwargs):
             try:
-                await f(*args, **kwargs)
+                await f(ctx, *args, **kwargs)
             except Exception as e:
                 await args[1].response.send_message(f"(decorator) Command Failed- {e}")  
                 
