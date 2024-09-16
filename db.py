@@ -20,7 +20,7 @@ class ULTCDB:
     def __init__(self) -> None:
         self.app = firebase_admin.initialize_app( credential=firebase_admin.credentials.Certificate(json.loads(os.getenv("DBAUTH"))), options={'databaseURL' :'https://ultcdb-default-rtdb.europe-west1.firebasedatabase.app/'} )
         
-    async def GetBannedUsers(self) -> json:
+    async def GetBannedUsers(self) -> (tuple | any):
         print(f"getting banned users from db...")
         
         ref = db.reference("server/users/bannedusers")
