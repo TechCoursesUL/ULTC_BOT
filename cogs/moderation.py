@@ -112,13 +112,12 @@ class Moderation(commands.Cog):
         await interaction.response.send_message(f"{logMessage} banned {member.global_name} for {dayduration} day(s) for {reason}")
         
                 
-    #@app_commands.command(description="Get a list of all banned users")
-    #@HandleErrors
-    #async def getbannedusers(self, interaction: discord.Interaction):
-    #    await self.ValidatePermission("GetBannedUsers", interaction.user)
-    #
-    #   await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
-    #   return
+    @app_commands.command(description="Get a list of all banned users")
+    @HandleErrors
+    async def getbannedusers(self, interaction: discord.Interaction):
+        await self.ValidatePermission("GetBannedUsers", interaction.user)
+    
+        await interaction.response.send_message(f"Banned Users: {self.db.GetBannedUsers()}")
     
             
             
