@@ -135,7 +135,7 @@ class Moderation(commands.Cog):
     
     @app_commands.command(description="unban a user")
     @_ErrorHandler
-    async def unban(self, interaction: discord.Interaction, userid: int):
+    async def unban(self, interaction: discord.Interaction, userid: str):
         await self.ValidatePermission("unban", interaction.user)
         
         await self.db.RemoveBannedUser(userid)
@@ -151,7 +151,7 @@ class Moderation(commands.Cog):
         
     @app_commands.command(description="Get database BanData of a banned user")
     @_ErrorHandler
-    async def getuserbandata(self, interaction: discord.Interaction, userid : int):
+    async def getuserbandata(self, interaction: discord.Interaction, userid : str):
         await self.ValidatePermission("getuserbandata", interaction.user)
     
         await interaction.followup.send(f"Banned User's BanData: {await self.db.GetBannedUser(userid)}")
