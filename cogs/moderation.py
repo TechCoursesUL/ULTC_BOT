@@ -83,19 +83,19 @@ class Moderation(commands.Cog):
             elif await self._ValidatePermission("punishprotectionbypass", interaction.user):
                 timersecs = 15
                 
-                confirmationmessage = await interaction.channel.send(f"<> {targetUser.name} is protected from /{command}. Your permission level allows a bypass\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in {timersecs} seconds-] <>")
+                confirmationmessage = await interaction.channel.send(f"<> {targetUser.name} is protected from /{command}. Your permission level allows a Bypass.\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in {timersecs} seconds-] <>")
                 
                 def check(m):
                     return (m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass"))
                 try:
                     response = await self.bot.wait_for('message', check=check, timeout=timersecs)
-                    confirmationmessage.delete()
+                    await confirmationmessage.delete()
                     if response.content == "!confirmbypass":
                         return True
                     else:
                         raise ConnectionAbortedError("Command Cancelled")
                 except asyncio.TimeoutError:
-                    confirmationmessage.delete()
+                    await confirmationmessage.delete()
                     raise TimeoutError("Command Auto-Cancelled")
                 
                 
