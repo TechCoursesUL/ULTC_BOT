@@ -39,6 +39,7 @@ class ULTCDB:
         ref = db.reference("server/users/bannedusers")
         child = ref.child(f"{userid}")
         
+        
         child.delete()
         
     async def GetBannedUser(self, userid : str):

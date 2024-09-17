@@ -1,5 +1,13 @@
 import discord
+import moderation
+import psutil
+import time
+import datetime
+from moderation import Moderation
+import errorhandler
+from errorhandler import ErrorHandler
 from discord.ext import commands, tasks
+from discord import app_commands
 from typing import Literal, Optional
 import requests
 
@@ -9,6 +17,58 @@ class General(commands.Cog):
         self.bot = bot
         self.index = 0
         self.heartbeat.start()
+        
+    @app_commands.command()
+    @ErrorHandler
+    async def load(self, interaction: discord.Interaction):
+        await Moderation.ValidatePermission("load", interaction.user)
+        
+        boot_time = psutil.boot_time()
+        uptime_seconds = time.time() - boot_time
+        uptime_str = str(datetime.timedelta(seconds=int(uptime_seconds)))
+        embed = discord.Embed(
+            title="📊 Current Server Load",
+            color=0x33d17a,
+            description="Here's the current status of the server's performance."
+        )
+        embed.add_field(name="**🖥️ CPU Usage**", value=f"`{psutil.cpu_percent()}%`", inline=False)
+        embed.add_field(name="**💾 RAM Usage**", value=f"`{psutil.virtual_memory().percent}%`", inline=False)
+        embed.add_field(name="**🕒 Uptime**", value=f"`{uptime_str}`", inline=False)
+        embed.add_field(name="**📂 Disk Usage**", value=f"`{psutil.disk_usage('/').percent}%`", inline=False)
+        embed.set_footer(text=f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        await interaction.followup.send(embed=embed)
+    
+    @app_commands.command()
+    @ErrorHandler
+    async def create_embed(self, interaction: discord.Interaction, *, args=None):
+        await Moderation.ValidatePermission("create_embed", interaction.user)
+        
+        if args is None:
+            raise NameError("Please provide the title, description, and color in the following format: `!embed <title> | <description> | <color>`")
+        try:
+            title, description, colour = args.split('|')
+            print(colour)
+            print(discord.Color.from_str(colour.strip()))
+        except ValueError:
+            raise NameError("Invalid format! Please use: `!embed <title> | <description> | <color> (in hex)`")
+        embed = discord.Embed(title=title, description=description,
+                              color=discord.Color.from_str(colour.strip()))
+        print(title)
+        await interaction.followup.send(embed=embed)
+    
+    @app_commands.command()
+    @ErrorHandler
+    async def purge(self, interaction: discord.Interaction, amount: int):
+        await Moderation.ValidatePermission("purge", interaction.user)
+        
+        await interaction.channel.purge(limit=amount)
+        await interaction.followup.send(f"Successfully deleted {amount} messages")
+        
+    @app_commands.command()
+    @ErrorHandler
+    async def version(self, interaction: discord.Interaction):
+        version = open('version.txt').read().strip()
+        await interaction.followup.send(f"bot currently running on version: {version}")
 
     @commands.Cog.listener()
     async def on_ready(self):

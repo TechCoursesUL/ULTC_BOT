@@ -5,7 +5,8 @@ import random
 import asyncio
 import time
 
-import inspect
+import errorhandler
+from errorhandler import ErrorHandler
 
 from discord.ext import commands
 from discord import app_commands, Interaction
@@ -14,66 +15,85 @@ from db import ULTCDB
 
 
 class Moderation(commands.Cog):
-    def __init__(self, bot):
-        self.bot = bot
-        self.Perms = {
+    
+    perms = {
             "punishprotectionbypass": [
                 1283864386305527930, # Founders
             ],
             "punishprotection": [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
                 1283828417707642965, # Beep Boop (bots)
             ],
             "kick": [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
             ],
             "ban":  [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
             ],
             "unban":  [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
             ],
             "mute": [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
             ],
             "getallbandata": [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
             ],
             "getuserbandata": [
                 1283864386305527930, # Founders
+                1283787573742927882, # Admins
+                1284246744800039055, # ModerationPerms
+            ],
+            "update": [
+                1283864386305527930, # Founders
+                1283787573742927882, # Admins
+            ],
+            "load": [
+                1283864386305527930, # Founders
+                1283787573742927882, # Admins
+                1284246744800039055, # ModerationPerms
+            ],
+            "create_embed": [
+                1283864386305527930, # Founders
+                1283787573742927882, # Admins
+            ],
+            "purge": [
+                1283864386305527930, # Founders
+                1283787573742927882, # Admins
                 1284246744800039055, # ModerationPerms
             ]
         }
+    
+    def __init__(self, bot):
+        self.bot = bot
+        
         self.db = ULTCDB()
     
-    def _ErrorHandler(f):
-        async def decorator(*args, **kwargs):
-            try:
-                await args[1].response.defer()
-                return await f(*args, **kwargs)
-            except Exception as e:
-                await args[1].followup.send(f"Command Failed- {e}")  
-                
-        decorator.__name__ = f.__name__
-        sig = inspect.signature(f)
-        decorator.__signature__ = sig.replace(parameters=tuple(sig.parameters.values())[1:])
-        return decorator
-    
-        
-    async def _ValidatePermission(self, permission: str, commandUser: discord.Member) -> bool:        
-        for role in self.Perms[permission]:
+    @staticmethod
+    async def _ValidatePermission(permission: str, commandUser: discord.Member) -> bool:   
+        if not Moderation.perms.__contains__(permission):
+            raise FileNotFoundError("Command attempted to be validated does not exist in Moderation.perms")
+             
+        for role in Moderation.perms[permission]:
             if discord.utils.get(commandUser.guild.roles, id=role) in commandUser.roles:
                 return True
             
         return False
-    async def ValidatePermission(self, permission: str, commandUser: discord.Member) -> bool:        
-        if await self._ValidatePermission(permission, commandUser):
+    @staticmethod
+    async def ValidatePermission(permission: str, commandUser: discord.Member) -> bool:        
+        if await Moderation._ValidatePermission(permission, commandUser):
             return True
         else:    
             raise PermissionError("Missing Permissions")
@@ -118,7 +138,7 @@ class Moderation(commands.Cog):
         
     
     @app_commands.command(description="kick a user")
-    @_ErrorHandler
+    @ErrorHandler
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
         await self.ValidatePunishPermissions("kick", interaction, target)
         
@@ -126,7 +146,7 @@ class Moderation(commands.Cog):
         
     
     @app_commands.command(description="ban a user")
-    @_ErrorHandler
+    @ErrorHandler
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
         await self.ValidatePunishPermissions("ban", interaction, member)
             
@@ -134,7 +154,7 @@ class Moderation(commands.Cog):
         await interaction.followup.send(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
     
     @app_commands.command(description="unban a user")
-    @_ErrorHandler
+    @ErrorHandler
     async def unban(self, interaction: discord.Interaction, userid: str):
         await self.ValidatePermission("unban", interaction.user)
         
@@ -143,14 +163,14 @@ class Moderation(commands.Cog):
         
                 
     @app_commands.command(description="Get database BanData of all banned users")
-    @_ErrorHandler
+    @ErrorHandler
     async def getallbandata(self, interaction: discord.Interaction):
         await self.ValidatePermission("getallbandata", interaction.user)
     
         await interaction.followup.send(f"All Banned Users BanData: {self.db.GetAllBannedUsers()}")
         
     @app_commands.command(description="Get database BanData of a banned user")
-    @_ErrorHandler
+    @ErrorHandler
     async def getuserbandata(self, interaction: discord.Interaction, userid : str):
         await self.ValidatePermission("getuserbandata", interaction.user)
     
