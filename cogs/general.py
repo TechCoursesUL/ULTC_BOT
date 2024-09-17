@@ -1,5 +1,4 @@
 import discord
-import moderation
 import psutil
 import time
 import datetime
