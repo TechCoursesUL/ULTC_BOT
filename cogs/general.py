@@ -38,20 +38,12 @@ class General(commands.Cog):
     
     @app_commands.command()
     @ErrorHandler
-    async def create_embed(self, interaction: discord.Interaction, *, args:str = None):
+    async def create_embed(self, interaction: discord.Interaction, title: str, description: str, hexcolour: str):
         await Permissions.ValidatePermission("create_embed", interaction.user)
-        
-        if args is None:
-            raise NameError("Please provide the title, description, and color in the following format: `!embed <title> | <description> | <color>`")
-        try:
-            title, description, colour = args.split('|')
-            print(colour)
-            print(discord.Color.from_str(colour.strip()))
-        except ValueError:
-            raise NameError("Invalid format! Please use: `!embed <title> | <description> | <color> (in hex)`")
+        print(discord.Color.from_str(hexcolour.strip()))
+
         embed = discord.Embed(title=title, description=description,
-                              color=discord.Color.from_str(colour.strip()))
-        print(title)
+                              color=discord.Color.from_str(hexcolour.strip()))
         await interaction.followup.send(embed=embed)
     
     @app_commands.command()
