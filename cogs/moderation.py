@@ -121,7 +121,7 @@ class Moderation(commands.Cog):
     @app_commands.command(description="ban a user")
     @_ErrorHandler
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
-        logMessage = await self.ValidatePunishPermissions("ban", interaction.user, member)
+        logMessage = await self.ValidatePunishPermissions("ban", interaction, member)
             
         await interaction.followup.send(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
         
