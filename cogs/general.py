@@ -3,8 +3,7 @@ import moderation
 import psutil
 import time
 import datetime
-from moderation import Moderation
-import errorhandler
+from permissions import Permissions
 from errorhandler import ErrorHandler
 from discord.ext import commands, tasks
 from discord import app_commands
@@ -21,7 +20,7 @@ class General(commands.Cog):
     @app_commands.command()
     @ErrorHandler
     async def load(self, interaction: discord.Interaction):
-        await Moderation.ValidatePermission("load", interaction.user)
+        await Permissions.ValidatePermission("load", interaction.user)
         
         boot_time = psutil.boot_time()
         uptime_seconds = time.time() - boot_time
@@ -41,7 +40,7 @@ class General(commands.Cog):
     @app_commands.command()
     @ErrorHandler
     async def create_embed(self, interaction: discord.Interaction, *, args=None):
-        await Moderation.ValidatePermission("create_embed", interaction.user)
+        await Permissions.ValidatePermission("create_embed", interaction.user)
         
         if args is None:
             raise NameError("Please provide the title, description, and color in the following format: `!embed <title> | <description> | <color>`")
@@ -59,7 +58,7 @@ class General(commands.Cog):
     @app_commands.command()
     @ErrorHandler
     async def purge(self, interaction: discord.Interaction, amount: int):
-        await Moderation.ValidatePermission("purge", interaction.user)
+        await Permissions.ValidatePermission("purge", interaction.user)
         
         await interaction.channel.purge(limit=amount)
         await interaction.followup.send(f"Successfully deleted {amount} messages")

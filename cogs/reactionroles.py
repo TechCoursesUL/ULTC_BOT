@@ -1,6 +1,7 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
-
+from permissions import Permissions
 class ReactionRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -13,9 +14,9 @@ class ReactionRoles(commands.Cog):
             '💾': '1283820666830983258'
         }
 
-    @commands.command()
-    async def setup_reactions(self, ctx):
-        message = await ctx.send('''
+    @app_commands.command()
+    async def setup_reactions(self, interaction: discord.Interaction):
+        message = await interaction.channel.send('''
 React to this message to get a role!
 Common entry: 🖥️
 Cyber Security: 🔐

@@ -1,8 +1,7 @@
 import discord
 from discord import app_commands
 from discord.ext import commands
-import moderation
-from moderation import Moderation
+from permissions import Permissions
 from errorhandler import ErrorHandler
 import os
 import subprocess
@@ -18,7 +17,7 @@ class Maintenance(commands.Cog):
     @app_commands.command(description="Manually update the bot to the latest version")
     @ErrorHandler
     async def update(self, interaction: discord.Interaction):
-        await Moderation.ValidatePermission("update", interaction.user)
+        await Permissions.ValidatePermission("update", interaction.user)
         message = await interaction.channel.send("Pulling the latest updates from GitHub...")
         git_pull = subprocess.run(
             ["git", "pull"], capture_output=True, text=True)
