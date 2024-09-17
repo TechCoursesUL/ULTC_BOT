@@ -13,7 +13,7 @@ async def sync(ctx):
     try:
         await ctx.send("Starting sync...")
         synced = await bot.tree.sync()
-        await ctx.send(f"{synced} slash command(s) synced")
+        await ctx.send(f"{synced.count} slash command(s) synced")
     except Exception as e:
         await ctx.send(f"An Error Occurred While Syncing: {e}")
 

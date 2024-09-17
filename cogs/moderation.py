@@ -90,7 +90,7 @@ class Moderation(commands.Cog):
                 return True
             
             elif await self._ValidatePermission("punishprotectionbypass", interaction.user):
-                confirmationmessage = await interaction.channel.send(f"<> {targetUser.name} is protected from /{command}. Your permission level allows a Bypass.\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in 15 seconds-] <>")
+                confirmationmessage = await interaction.channel.send(f"[<!>]  {targetUser.name} is protected from /{command} -=-Your permission level allows a Bypass. Confirm Bypass? <(  **!confirmbypass**  <?>  **!cancelbypass**  )>-=-  [<!>]\n[<[ -=Auto-Cancels in 15 seconds=- ]>]")
                 
                 def check(m):
                     return (m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass"))

@@ -42,7 +42,7 @@ class ULTCDB:
     async def GetBannedUser(self, userid : int):
         ref = db.reference("server/users/bannedusers")
         child = ref.child(userid)
-        child.get()
+        return child.get()
         
         
 
