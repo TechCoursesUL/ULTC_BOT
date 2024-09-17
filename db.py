@@ -2,6 +2,7 @@ import firebase_admin
 import json
 import os
 import dotenv
+import discord
 from firebase_admin import db
 
 bannedUserExample = json.dumps(
@@ -26,22 +27,22 @@ class ULTCDB:
         ref = db.reference("server/users/bannedusers")
         return ref.get()
     
-    async def AddBannedUser(self, userid : str, username : str, unixendtime : int, reason : str):
+    async def AddBannedUser(self, userid : int, username : str, unixendtime : int, reason : str):
         ref = db.reference("server/users/bannedusers")
-        child = ref.child(userid)
+        child = ref.child(f"{userid}")
         
         child.set({"displayname": username,
             "endtime": unixendtime,
             "reason": reason,})
         
-    async def RemoveBannedUser(self, userid : str):
+    async def RemoveBannedUser(self, userid : int):
         ref = db.reference("server/users/bannedusers")
-        child = ref.child(userid)
+        child = ref.child(f"{userid}")
         child.delete()
         
-    async def GetBannedUser(self, userid : str):
+    async def GetBannedUser(self, userid : int):
         ref = db.reference("server/users/bannedusers")
-        child = ref.child(userid)
+        child = ref.child(f"{userid}")
         return child.get()
         
         

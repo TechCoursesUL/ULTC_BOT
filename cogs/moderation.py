@@ -130,7 +130,7 @@ class Moderation(commands.Cog):
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
         await self.ValidatePunishPermissions("ban", interaction, member)
             
-        await self.db.AddBannedUser(member.id, member.global_name, int(time.time() + (86400 * dayduration)), reason)
+        await self.db.AddBannedUser(userid=member.id, username=member.global_name, unixendtime=int(time.time() + (86400 * dayduration)), reason=reason)
         await interaction.followup.send(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
     
     @app_commands.command(description="unban a user")
@@ -147,7 +147,7 @@ class Moderation(commands.Cog):
     async def getallbandata(self, interaction: discord.Interaction):
         await self.ValidatePermission("getallbandata", interaction.user)
     
-        await interaction.followup.send(f"All Banned Users BanData: {await self.db.GetAllBannedUsers()}")
+        await interaction.followup.send(f"All Banned Users BanData: {self.db.GetAllBannedUsers()}")
         
     @app_commands.command(description="Get database BanData of a banned user")
     @_ErrorHandler
