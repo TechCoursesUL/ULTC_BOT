@@ -35,7 +35,7 @@ class General(commands.Cog):
         request = requests.get("https://ultc-botdev.onrender.com/")
         print(request.text)
 
-    @commands.Cog.listener()
+    #@commands.Cog.listener()
     async def on_member_join(self, member):
         if welcome_channel := discord.utils.get(
             member.guild.text_channels, name='welcome'

@@ -3,6 +3,7 @@ import firebase_admin
 import functools
 import random
 import asyncio
+import time
 
 import inspect
 
@@ -32,11 +33,19 @@ class Moderation(commands.Cog):
                 1283864386305527930, # Founders
                 1284246744800039055, # ModerationPerms
             ],
+            "unban":  [
+                1283864386305527930, # Founders
+                1284246744800039055, # ModerationPerms
+            ],
             "mute": [
                 1283864386305527930, # Founders
                 1284246744800039055, # ModerationPerms
             ],
-            "getbannedusers": [
+            "getallbandata": [
+                1283864386305527930, # Founders
+                1284246744800039055, # ModerationPerms
+            ],
+            "getuserbandata": [
                 1283864386305527930, # Founders
                 1284246744800039055, # ModerationPerms
             ]
@@ -81,14 +90,12 @@ class Moderation(commands.Cog):
                 return True
             
             elif await self._ValidatePermission("punishprotectionbypass", interaction.user):
-                timersecs = 15
-                
-                confirmationmessage = await interaction.channel.send(f"<> {targetUser.name} is protected from /{command}. Your permission level allows a Bypass.\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in {timersecs} seconds-] <>")
+                confirmationmessage = await interaction.channel.send(f"<> {targetUser.name} is protected from /{command}. Your permission level allows a Bypass.\nConfirm Bypass? ( **!confirmbypass** <?> **!cancelbypass** )\n[-Auto-Cancels in 15 seconds-] <>")
                 
                 def check(m):
                     return (m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass"))
                 try:
-                    response = await self.bot.wait_for('message', check=check, timeout=timersecs)
+                    response = await self.bot.wait_for('message', check=check, timeout=15)
                     await confirmationmessage.delete()
                     if response.content == "!confirmbypass":
                         return True
@@ -113,7 +120,7 @@ class Moderation(commands.Cog):
     @app_commands.command(description="kick a user")
     @_ErrorHandler
     async def kick(self, interaction: discord.Interaction, target: discord.Member, reason: str):
-        logMessage = await self.ValidatePunishPermissions("kick", interaction, target)
+        await self.ValidatePunishPermissions("kick", interaction, target)
         
         await interaction.followup.send(f"Kicked {target.global_name} for {reason}")
         
@@ -121,17 +128,33 @@ class Moderation(commands.Cog):
     @app_commands.command(description="ban a user")
     @_ErrorHandler
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
-        logMessage = await self.ValidatePunishPermissions("ban", interaction, member)
+        await self.ValidatePunishPermissions("ban", interaction, member)
             
+        await self.db.AddBannedUser(member.id, member.global_name, int(time.time() + (86400 * dayduration)), reason)
         await interaction.followup.send(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
+    
+    @app_commands.command(description="unban a user")
+    @_ErrorHandler
+    async def unban(self, interaction: discord.Interaction, userid: int):
+        await self.ValidatePermission("unban", interaction.user)
+        
+        await self.db.RemoveBannedUser(userid)
+        await interaction.followup.send(f"Unbanned {userid}")
         
                 
-    @app_commands.command(description="Get a list of all banned users")
+    @app_commands.command(description="Get database BanData of all banned users")
     @_ErrorHandler
-    async def getbannedusers(self, interaction: discord.Interaction):
-        await self.ValidatePermission("getbannedusers", interaction.user)
+    async def getallbandata(self, interaction: discord.Interaction):
+        await self.ValidatePermission("getallbandata", interaction.user)
     
-        await interaction.followup.send(f"Banned Users: {self.db.GetBannedUsers()}")
+        await interaction.followup.send(f"All Banned Users BanData: {self.db.GetAllBannedUsers()}")
+        
+    @app_commands.command(description="Get database BanData of a banned user")
+    @_ErrorHandler
+    async def getuserbandata(self, interaction: discord.Interaction, userid : int):
+        await self.ValidatePermission("getuserbandata", interaction.user)
+    
+        await interaction.followup.send(f"Banned User's BanData: {self.db.GetBannedUser(userid)}")
     
             
             
