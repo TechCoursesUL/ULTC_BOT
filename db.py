@@ -26,7 +26,7 @@ class ULTCDB:
         ref = db.reference("server/users/bannedusers")
         return ref.get()
     
-    async def AddBannedUser(self, userid : int, username : str, unixendtime : int, reason : str):
+    async def AddBannedUser(self, userid : str, username : str, unixendtime : int, reason : str):
         ref = db.reference("server/users/bannedusers")
         child = ref.child(userid)
         
@@ -34,12 +34,12 @@ class ULTCDB:
             "endtime": unixendtime,
             "reason": reason,})
         
-    async def RemoveBannedUser(self, userid : int):
+    async def RemoveBannedUser(self, userid : str):
         ref = db.reference("server/users/bannedusers")
         child = ref.child(userid)
         child.delete()
         
-    async def GetBannedUser(self, userid : int):
+    async def GetBannedUser(self, userid : str):
         ref = db.reference("server/users/bannedusers")
         child = ref.child(userid)
         return child.get()
