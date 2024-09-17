@@ -32,7 +32,7 @@ class Moderation(commands.Cog):
                 return True
             
             elif await Permissions._ValidatePermission("punishprotectionbypass", interaction.user):
-                confirmationmessage = await interaction.channel.send(f"**[<!>]**  {targetUser.name} is protected from /{command} -=-Your permission level allows a Bypass. Confirm Bypass? <(  **!confirmbypass**  <?>  **!cancelbypass**  )>-=-  **[<!>]**\n[<[ -=Auto-Cancels in 15 seconds=- ]>]")
+                confirmationmessage = await interaction.channel.send(f"{targetUser.name} is protected from /{command} \n**[<!>]** [= *Your permission level allows a Bypass* =] => [ (< *Confirm Bypass?* >) <()  **!confirmbypass**  <?>  **!cancelbypass**  )> ] **[<!>]**\n[<[ <0> Auto-Cancel in 15 seconds <0> ]>]")
                 
                 def check(m):
                     return (m.author.id == interaction.user.id and m.channel.id == interaction.channel.id and m.content in ("!confirmbypass", "!cancelbypass"))
@@ -72,7 +72,7 @@ class Moderation(commands.Cog):
     async def ban(self, interaction: discord.Interaction, member: discord.Member, reason: str, dayduration: int):
         await self.ValidatePunishPermissions("ban", interaction, member)
             
-        await self.db.AddBannedUser(userid=member.id, username=member.global_name, unixendtime=int(time.time() + (86400 * dayduration)), reason=reason)
+        await self.db.AddBannedUser(userid=member.id, username=member.global_name,  unixendtime=int(time.time() + (86400 * dayduration)), reason=reason, staffmember=interaction.user)
         await interaction.followup.send(f"Banned {member.global_name} for {dayduration} day(s) for {reason}")
     
     @app_commands.command(description="unban a user")

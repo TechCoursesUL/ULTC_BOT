@@ -27,13 +27,14 @@ class ULTCDB:
         ref = db.reference("server/users/bannedusers")
         return ref.get()
     
-    async def AddBannedUser(self, userid : str, username : str, unixendtime : int, reason : str):
+    async def AddBannedUser(self, userid : str, username : str, unixendtime : int, reason : str, staffmember: discord.Member):
         ref = db.reference("server/users/bannedusers")
         child = ref.child(f"{userid}")
         
-        child.set({"displayname": username,
-            "endtime": unixendtime,
-            "reason": reason,})
+        child.set({"displayName": username,
+            "endTime": unixendtime,
+            "reason": reason,
+            "byStaffMember": staffmember.global_name})
         
     async def RemoveBannedUser(self, userid : str):
         ref = db.reference("server/users/bannedusers")
