@@ -38,7 +38,7 @@ class General(commands.Cog):
     
     @app_commands.command()
     @ErrorHandler
-    async def create_embed(self, interaction: discord.Interaction, *, args=None):
+    async def create_embed(self, interaction: discord.Interaction, *, args:str = None):
         await Permissions.ValidatePermission("create_embed", interaction.user)
         
         if args is None:
