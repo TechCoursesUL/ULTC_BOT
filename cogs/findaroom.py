@@ -1,9 +1,11 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 import os
 import subprocess
 import sys
 
+from errorhandler import ErrorHandler
 
 class FindARoom(commands.Cog):
     def __init__(self, bot):
@@ -29,8 +31,9 @@ class FindARoom(commands.Cog):
             "Irish World Academy Building": (["IWG", "IW1", "IW2"], "https://maps.app.goo.gl/KEfpwx7rcWiAP3JaA")
         }
 
-    @commands.command()
-    async def findaroom(self, ctx, location):
+    @app_commands.command(description="find a room by it's identifier")
+    @ErrorHandler
+    async def findaroom(self, interaction : discord.Interaction, location: str):
         building_name = None
         room_number = None
         maps_link = None
@@ -38,7 +41,7 @@ class FindARoom(commands.Cog):
         for building, (acronyms, link) in self.building_acronyms.items():
             for acronym in acronyms:
 
-                if location.startswith(acronym):
+                if location.lower().startswith(acronym.lower()):
 
                     room_number = location[len(acronym):]
                     building_name = building
@@ -48,12 +51,12 @@ class FindARoom(commands.Cog):
                 break
 
         if not building_name:
-            await ctx.send(f"Unknown building acronym. Please check the input: {location}.")
-            return
+            raise KeyError(f"Unknown building acronym. Please check the input: {location}.")
+            
 
         if not room_number or not room_number.isdigit():
-            await ctx.send(f"Invalid room number for the location: {location}.")
-            return
+            raise KeyError(f"Invalid room number for the location: {location}.")
+            
 
         floor_number = room_number[0]
 
@@ -70,7 +73,7 @@ class FindARoom(commands.Cog):
         embed.set_footer(
             text="although unlikely, if this bot is incorrect please report it to us.")
 
-        await ctx.send(embed=embed)
+        await interaction.followup.send(embed=embed)
 
 
 async def setup(bot):

@@ -1,87 +1,56 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
-
-class ReactionRole(commands.Cog):
+from permissions import Permissions
+class ReactionRoles(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.message_id = 1284937490800578632
-        self.channel_id = 1283817759540510720
-        self.emoji_role_map = {
-            '🖥️': 1283817589788770414,
-            '🔐': 1283820720128000120,
-            '🎮': 1283820769662603285,
-            '🤖': 1283820892698312858,
-            '🤓': 1283820845625639005,
-            '💾': 1283820666830983258,
-            '🎉': 1284937266308976770,
+        self.reactions = {
+            '🖥️': '1283817589788770414',
+            '🔐': '1283820720128000120',
+            '🎮': '1283820769662603285',
+            '🤖': '1283820892698312858',
+            '🤓': '1283820845625639005',
+            '💾': '1283820666830983258'
         }
 
-    @commands.Cog.listener()
-    async def on_raw_reaction_add(self, payload):
-        if payload.message_id != self.message_id:
-            return
+    @app_commands.command()
+    async def setup_reactions(self, interaction: discord.Interaction):
+        message = await interaction.channel.send('''
+React to this message to get a role!
+Common entry: 🖥️
+Cyber Security: 🔐
+Game Development: 🎮
+AI and Machine Learning: 🤖
+Immersive Software Engineering: 🤓
+Computer Systems: 💾''')
 
-        guild = self.bot.get_guild(payload.guild_id)
-        if not guild:
-            return
-
-        role_id = self.emoji_role_map.get(str(payload.emoji))
-        if not role_id:
-            return
-
-        role = guild.get_role(role_id)
-        if not role:
-            return
-
-        member = guild.get_member(payload.user_id)
-        if not member:
-            return
-
-        if member.bot:
-            return
-
-        try:
-            await member.add_roles(role)
-        except discord.HTTPException as e:
-            return
-
-    @commands.Cog.listener()
-    async def on_raw_reaction_remove(self, payload):
-        if payload.message_id != self.message_id:
-            return
-
-        guild = self.bot.get_guild(payload.guild_id)
-        if not guild:
-            return
-
-        role_id = self.emoji_role_map.get(str(payload.emoji))
-        if not role_id:
-            return
-
-        role = guild.get_role(role_id)
-        if not role:
-            return
-
-        member = guild.get_member(payload.user_id)
-        if not member:
-            return
-
-        if member.bot:
-            return
-
-        try:
-            await member.remove_roles(role)
-        except discord.HTTPException as e:
-            return
-    
-    @commands.command()
-    async def setup_reactions(self, ctx):
-        channel = self.bot.get_channel(self.channel_id)
-        message = await channel.fetch_message(self.message_id)
-        for emoji in self.emoji_role_map.keys():
+        for emoji in self.reactions:
             await message.add_reaction(emoji)
-            
 
+    @commands.Cog.listener()
+    async def on_reaction_add(self, reaction, user):
+        await self.check_reaction(reaction, user, add_role=True)
+
+    @commands.Cog.listener()
+    async def on_reaction_remove(self, reaction, user):
+        await self.check_reaction(reaction, user, add_role=False)
+
+    async def check_reaction(self, reaction, user, add_role):
+        if user.bot:
+            return
+        if reaction.emoji not in self.reactions:
+            return
+
+        role_id = self.reactions[reaction.emoji]
+        if role := discord.utils.get(
+            reaction.message.guild.roles, id=int(role_id)
+        ):
+            if member := reaction.message.guild.get_member(user.id):
+                if add_role:
+                    await member.add_roles(role)
+                else:
+                    await member.remove_roles(role)
 
 async def setup(bot):
-    await bot.add_cog(ReactionRole(bot))
+    await bot.add_cog(ReactionRoles(bot))
