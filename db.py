@@ -19,11 +19,12 @@ dotenv.load_dotenv()
 
 class ULTCDB:
     def __init__(self) -> None:
-        self.app = firebase_admin.initialize_app( credential=firebase_admin.credentials.Certificate(json.loads(os.getenv("DBAUTH"))), options={'databaseURL' :'https://ultcdb-default-rtdb.europe-west1.firebasedatabase.app/'} )
+        self.app = firebase_admin.initialize_app( credential=firebase_admin.credentials.Certificate("creds.json"), options={'databaseURL' :'https://ultcdb-default-rtdb.europe-west1.firebasedatabase.app/'} )
+
         
     def GetAllBannedUsers(self):
-        print(f"getting banned users from db...")
-        
+        print("getting banned users from db...")
+
         ref = db.reference("server/users/bannedusers")
         return ref.get()
     
