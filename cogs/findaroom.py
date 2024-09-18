@@ -1,6 +1,8 @@
 import discord
+from discord import app_commands
 from discord.ext import commands
 
+from errorhandler import ErrorHandler
 
 class FindARoom(commands.Cog):
     def __init__(self, bot):
@@ -27,11 +29,10 @@ class FindARoom(commands.Cog):
             "Irish World Academy": (["IW"], "https://maps.app.goo.gl/KEfpwx7rcWiAP3JaA")
         }
 
-    @commands.command()
-    async def findaroom(self, ctx, location):
-
+    @app_commands.command(description="find a room by it's identifier")
+    @ErrorHandler
+    async def findaroom(self, interaction : discord.Interaction, location: str):
         location = location.strip().upper()
-
         building_name = None
         room_number = None
         maps_link = None
@@ -47,16 +48,14 @@ class FindARoom(commands.Cog):
                 break
 
         if not building_name:
-            await ctx.send(f"Unknown building acronym. Please check the input: `{location}`.")
-            return
-
+            raise KeyError(f"Unknown building acronym. Please check the input: {location}.")
+  
         if (
             not room_number
             or not room_number.isdigit()
             and room_number[0] not in {"G", "M", "O"}
         ):
-            await ctx.send(f"Invalid room number for the location: `{location}`.")
-            return
+            raise KeyError(f"Invalid room number for the location: {location}.")
 
         floor_number = self.get_floor_number(room_number)
 
@@ -69,8 +68,11 @@ class FindARoom(commands.Cog):
         embed.add_field(name="Floor", value=f"{floor_number}", inline=True)
         embed.add_field(name="Room", value=f"Room {room_number[1:]}", inline=True)
         embed.add_field(name="Google link", value=f"{maps_link}", inline=False)
-        embed.set_footer(text="If this information is incorrect, please report it to us.")
-        await ctx.send(embed=embed)
+
+        embed.set_footer(
+            text="although unlikely, if this bot is incorrect please report it to us.")
+
+        await interaction.followup.send(embed=embed)
 
     def get_floor_number(self, room_number):
         first_char = room_number[0]
