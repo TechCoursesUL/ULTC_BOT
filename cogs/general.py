@@ -69,6 +69,13 @@ class General(commands.Cog):
             member.guild.text_channels, name='welcome'
         ):
             await welcome_channel.send(f"Welcome to the server, {member.mention}! please checkout the rules and grab roles.")
+    
+    @commands.Cog.listener()
+    async def on_message(self, message):
+        if message.author.bot:
+            return
+        if message.content.startswith('!') and message.content != "!sync":
+            await message.channel.send("this bot no longer uses the ! command prefix, please use /")
 
 
 async def setup(bot):
