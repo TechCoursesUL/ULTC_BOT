@@ -22,7 +22,7 @@ class Maintenance(commands.Cog):
         git_pull = subprocess.run(
             ["git", "pull"], capture_output=True, text=True)
         if git_pull.returncode == 0:
-            await message.edit("Successfully pulled the latest updates. Restarting bot...")
+            await message.edit(content="Successfully pulled the latest updates. Restarting bot...")
             await message.delete()
             await interaction.followup.send("Bot is restarting...")
             os.execv(sys.executable, ['python'] + sys.argv)
