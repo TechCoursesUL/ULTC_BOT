@@ -40,7 +40,7 @@ class FindARoom(commands.Cog):
         for building, (acronyms, link) in self.building_acronyms.items():
             for acronym in acronyms:
                 if location.startswith(acronym):
-                    room_number = location[len(acronym):].strip()
+                    room_number = location[len(acronym):1].strip()
                     building_name = building
                     maps_link = link
                     break
