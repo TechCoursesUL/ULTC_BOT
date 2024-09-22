@@ -18,9 +18,7 @@ cd ULTC_BOT
 To keep dependencies isolated, create a virtual environment using Python’s venv module:
 
 ```
-
 python -m venv env
-
 ```
 Activate the virtual environment:
 
