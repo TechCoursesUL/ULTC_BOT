@@ -16,6 +16,10 @@ class ReactionRoles(commands.Cog):
             "💾": "1283820666830983258",
             "🎉": "1284937266308976770",
         }
+        self.optOutReactions = [
+            '🎉',
+        ]
+
 
     @app_commands.command()
     async def setup_reactions(self, interaction: discord.Interaction):
@@ -34,13 +38,22 @@ Annoucements (opt out): 🎉"""
         for emoji in self.reactions:
             await message.add_reaction(emoji)
 
+
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction, user):
-        await self.check_reaction(reaction, user, add_role=True)
+    async def on_reaction_add(self, reaction : discord.Reaction, user):
+        if self.optOutReactions.__contains__(reaction.emoji):
+            await self.check_reaction(reaction, user, add_role=False)
+        else:
+            await self.check_reaction(reaction, user, add_role=True)
+
 
     @commands.Cog.listener()
     async def on_reaction_remove(self, reaction, user):
-        await self.check_reaction(reaction, user, add_role=False)
+        if self.optOutReactions.__contains__(reaction.emoji):
+            await self.check_reaction(reaction, user, add_role=True)
+        else:
+            await self.check_reaction(reaction, user, add_role=False)
+
 
     async def check_reaction(self, reaction, user, add_role):
         if user.bot:
@@ -56,6 +69,6 @@ Annoucements (opt out): 🎉"""
                 else:
                     await member.remove_roles(role)
 
-
+                    
 async def setup(bot):
     await bot.add_cog(ReactionRoles(bot))

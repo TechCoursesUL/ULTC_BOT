@@ -6,6 +6,7 @@ from errorhandler import ErrorHandler
 
 
 class FindARoom(commands.Cog):
+    
     def __init__(self, bot):
         self.bot = bot
 
@@ -63,23 +64,29 @@ class FindARoom(commands.Cog):
             ),
         }
 
+
     @app_commands.command(description="find a room by it's identifier")
     @ErrorHandler
-    async def findaroom(self, interaction: discord.Interaction, location: str):
-        location = location.strip().upper()
+    async def findaroom(self, interaction : discord.Interaction, room: str):
+        
+        location = room.strip().upper()
+
         building_name = None
         room_number = None
         maps_link = None
 
+
         for building, (acronyms, link) in self.building_acronyms.items():
             for acronym in acronyms:
                 if location.startswith(acronym):
-                    room_number = location[len(acronym) : 1].strip()
+                    room_number = location[len(acronym):].strip()
+
                     building_name = building
                     maps_link = link
                     break
             if building_name:
                 break
+
 
         if not building_name:
             raise KeyError(
@@ -87,19 +94,22 @@ class FindARoom(commands.Cog):
             )
 
         if (
-            not room_number
-            or not room_number.isdigit()
-            and room_number[0] not in {"G", "M", "O"}
+            (not room_number)
+            or (not room_number.isdigit()
+            and room_number[0] not in {"G", "M", "O"})
         ):
             raise KeyError(f"Invalid room number for the location: {location}.")
-
+        
+        
         floor_number = self.get_floor_number(room_number)
+        
 
         embed = discord.Embed(
             title="Room Location Found!",
             description=f"Here is the location for `{location}`:",
             color=discord.Color.blue(),
         )
+        
         embed.add_field(name="Building", value=building_name, inline=False)
         embed.add_field(name="Floor", value=f"{floor_number}", inline=True)
         embed.add_field(name="Room", value=f"Room {room_number[1:]}", inline=True)
@@ -110,16 +120,20 @@ class FindARoom(commands.Cog):
         )
 
         await interaction.followup.send(embed=embed)
+        
 
     def get_floor_number(self, room_number):
+        
         first_char = room_number[0]
+        
         if first_char in {"G", "B", "O"}:
-            return "Ground Floor"
+            return "Ground Floor (G)"
         elif first_char == "M":
-            return "Mezzanine"
+            return "Mezzanine Floor (M)"
         else:
             return f"Floor {first_char}"
-
+        
+        
 
 async def setup(bot):
     await bot.add_cog(FindARoom(bot))

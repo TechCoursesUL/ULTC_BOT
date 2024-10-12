@@ -23,6 +23,8 @@ class General(commands.Cog):
         boot_time = psutil.boot_time()
         uptime_seconds = time.time() - boot_time
         uptime_str = str(datetime.timedelta(seconds=int(uptime_seconds)))
+        
+        
         embed = discord.Embed(
             title="📊 Current Server Load",
             color=0x33D17A,
@@ -36,15 +38,17 @@ class General(commands.Cog):
             value=f"`{psutil.virtual_memory().percent}%`",
             inline=False,
         )
+        
+        embed.add_field(name="**🖥️ CPU Usage**", value=f"`{psutil.cpu_percent()}%`", inline=False)
+        embed.add_field(name="**💾 RAM Usage**", value=f"`{psutil.virtual_memory().percent}%`", inline=False)
         embed.add_field(name="**🕒 Uptime**", value=f"`{uptime_str}`", inline=False)
-        embed.add_field(
-            name="**📂 Disk Usage**",
-            value=f"`{psutil.disk_usage('/').percent}%`",
-            inline=False,
-        )
+        embed.add_field(name="**📂 Disk Usage**", 
+                        value=f"`{psutil.disk_usage('/').percent}%`", 
+                        inline=False)
         embed.set_footer(
-            text=f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
+          text=f"Last updated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"
         )
+        
         await interaction.followup.send(embed=embed)
 
     @app_commands.command(
@@ -59,13 +63,15 @@ class General(commands.Cog):
         hexcolour: str,
     ):
         await Permissions.ValidatePermission("create_embed", interaction.user)
+        
+        
         print(discord.Color.from_str(hexcolour.strip()))
-
-        embed = discord.Embed(
-            title=title,
-            description=description,
-            color=discord.Color.from_str(hexcolour.strip()),
-        )
+        
+        
+        embed = discord.Embed(title=title, 
+                              description=description,
+                              color=discord.Color.from_str(hexcolour.strip()))
+        
         await interaction.followup.send(embed=embed)
 
     @app_commands.command()
@@ -79,7 +85,8 @@ class General(commands.Cog):
     @app_commands.command()
     @ErrorHandler
     async def version(self, interaction: discord.Interaction):
-        version = open("version.txt").read().strip()
+        version = open('version.txt').read().strip()
+        
         await interaction.followup.send(f"bot currently running on version: {version}")
 
     @commands.Cog.listener()
@@ -93,6 +100,7 @@ class General(commands.Cog):
         ):
             role = member.guild.get_role(1284937266308976770)
             member.add_roles(role)
+
             await welcome_channel.send(
                 f"Welcome to the server, {member.mention}! please checkout the rules and grab roles."
             )
@@ -101,6 +109,9 @@ class General(commands.Cog):
     async def on_message(self, message):
         if message.author.bot:
             return
+        
+        if message.content.startswith('!') and message.content != "!sync":
+            await message.channel.send("this bot no longer uses the ! command prefix, please use /")
         if message.content.startswith("!") and message.content != "!sync":
             await message.channel.send(
                 "this bot no longer uses the ! command prefix, please use /"

@@ -18,19 +18,21 @@ class Maintenance(commands.Cog):
     @ErrorHandler
     async def update(self, interaction: discord.Interaction):
         await Permissions.ValidatePermission("update", interaction.user)
-        message = await interaction.channel.send(
-            "Pulling the latest updates from GitHub..."
-        )
-        git_pull = subprocess.run(["git", "pull"], capture_output=True, text=True)
+
+        
+        message = await interaction.channel.send("Pulling the latest updates from GitHub...")
+        git_pull = subprocess.run(
+            ["git", "pull"], capture_output=True, text=True)
+        
         if git_pull.returncode == 0:
-            await message.edit(
-                content="Successfully pulled the latest updates. Restarting bot..."
-            )
+            await message.edit(content="Successfully pulled the latest updates. Restarting bot...")
             await message.delete()
             await interaction.followup.send("Bot is restarting...")
+            
             os.execv(sys.executable, ["python"] + sys.argv)
         else:
             await message.delete()
+            
             raise ValueError(f"Error pulling updates: {git_pull.stderr}")
 
 
