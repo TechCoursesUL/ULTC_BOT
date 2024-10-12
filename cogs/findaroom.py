@@ -94,9 +94,9 @@ class FindARoom(commands.Cog):
             )
 
         if (
-            (not room_number)
-            or (not room_number.isdigit()
-            and room_number[0] not in {"G", "M", "O"})
+            not room_number
+            or (room_number[0] not in {"G", "M", "O"} and not room_number[0].isdigit())
+            or (not room_number[1:-1].isdigit())
         ):
             raise KeyError(f"Invalid room number for the location: {location}.")
         
