@@ -98,7 +98,7 @@ class Moderation(commands.Cog):
     @app_commands.command(description="Gives all users the selected role")
     @ErrorHandler
     async def giveall(self, interaction: discord.Interaction, roleid: str):
-        role = get(interaction.guild.get_role(int(roleid)))
+        role = interaction.guild.get_role(int(roleid))
         if role is None:
             await interaction.followup.send("Their is no role with this given ID.")
             return

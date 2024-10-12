@@ -68,6 +68,8 @@ class General(commands.Cog):
         if welcome_channel := discord.utils.get(
             member.guild.text_channels, name='welcome'
         ):
+            role = member.guild.get_role(1284937266308976770)
+            member.add_roles(role)
             await welcome_channel.send(f"Welcome to the server, {member.mention}! please checkout the rules and grab roles.")
     
     @commands.Cog.listener()
