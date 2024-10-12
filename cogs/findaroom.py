@@ -4,34 +4,68 @@ from discord.ext import commands
 
 from errorhandler import ErrorHandler
 
+
 class FindARoom(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
         self.building_acronyms = {
             "Schuman Building": (["S"], "https://maps.app.goo.gl/dwgzdSP9WXfgHuQm8"),
-            "Kemmy Business School": (["KB"], "https://maps.app.goo.gl/owHGAn8NJqELBYuw8"),
-            "Computer Science Building": (["CS"], "https://maps.app.goo.gl/5PwH5nKDr2H5HQ9F6"),
+            "Kemmy Business School": (
+                ["KB"],
+                "https://maps.app.goo.gl/owHGAn8NJqELBYuw8",
+            ),
+            "Computer Science Building": (
+                ["CS"],
+                "https://maps.app.goo.gl/5PwH5nKDr2H5HQ9F6",
+            ),
             "Glucksman Library": (["GL"], "https://maps.app.goo.gl/BXtFYB6Bi9JMfim58"),
             "Foundation Building": (["F"], "https://maps.app.goo.gl/CMGNow2w8JKCLs1w7"),
-            "Engineering Research Building": (["ER"], "https://maps.app.goo.gl/g22HtvqEsr3fwKZv6"),
+            "Engineering Research Building": (
+                ["ER"],
+                "https://maps.app.goo.gl/g22HtvqEsr3fwKZv6",
+            ),
             "Languages Building": (["LC"], "https://maps.app.goo.gl/tw9yQL3bqEVmVeTX7"),
             "Lonsdale Building": (["L"], "https://maps.app.goo.gl/wMyurRMW8e1FmSy47"),
-            "Schrodinger Building": (["SR"], "https://maps.app.goo.gl/ez6eqtVKUss1yoWp9"),
+            "Schrodinger Building": (
+                ["SR"],
+                "https://maps.app.goo.gl/ez6eqtVKUss1yoWp9",
+            ),
             "PESS Building": (["P"], "https://maps.app.goo.gl/XAakN9zxL6HfZQk1A"),
-            "Health Sciences Building": (["HS"], "https://maps.app.goo.gl/jLw5HmNYi3JUNpvi6"),
-            "Main Building BLOCK A": (["A"], "https://maps.app.goo.gl/gVw4CikGzaymFqz26"),
-            "Main Building BLOCK B": (["B"], "https://maps.app.goo.gl/gVw4CikGzaymFqz26"),
-            "Main Building BLOCK C": (["C"], "https://maps.app.goo.gl/gVw4CikGzaymFqz26"),
-            "Main Building BLOCK D": (["D"], "https://maps.app.goo.gl/gVw4CikGzaymFqz26"),
-            "Main Building BLOCK E": (["E"], "https://maps.app.goo.gl/gVw4CikGzaymFqz26"),
+            "Health Sciences Building": (
+                ["HS"],
+                "https://maps.app.goo.gl/jLw5HmNYi3JUNpvi6",
+            ),
+            "Main Building BLOCK A": (
+                ["A"],
+                "https://maps.app.goo.gl/gVw4CikGzaymFqz26",
+            ),
+            "Main Building BLOCK B": (
+                ["B"],
+                "https://maps.app.goo.gl/gVw4CikGzaymFqz26",
+            ),
+            "Main Building BLOCK C": (
+                ["C"],
+                "https://maps.app.goo.gl/gVw4CikGzaymFqz26",
+            ),
+            "Main Building BLOCK D": (
+                ["D"],
+                "https://maps.app.goo.gl/gVw4CikGzaymFqz26",
+            ),
+            "Main Building BLOCK E": (
+                ["E"],
+                "https://maps.app.goo.gl/gVw4CikGzaymFqz26",
+            ),
             "Analog Building": (["AD"], "https://maps.app.goo.gl/xN34mcRj32H2ndsy5"),
-            "Irish World Academy": (["IW"], "https://maps.app.goo.gl/KEfpwx7rcWiAP3JaA")
+            "Irish World Academy": (
+                ["IW"],
+                "https://maps.app.goo.gl/KEfpwx7rcWiAP3JaA",
+            ),
         }
 
     @app_commands.command(description="find a room by it's identifier")
     @ErrorHandler
-    async def findaroom(self, interaction : discord.Interaction, location: str):
+    async def findaroom(self, interaction: discord.Interaction, location: str):
         location = location.strip().upper()
         building_name = None
         room_number = None
@@ -40,7 +74,7 @@ class FindARoom(commands.Cog):
         for building, (acronyms, link) in self.building_acronyms.items():
             for acronym in acronyms:
                 if location.startswith(acronym):
-                    room_number = location[len(acronym):1].strip()
+                    room_number = location[len(acronym) : 1].strip()
                     building_name = building
                     maps_link = link
                     break
@@ -48,8 +82,10 @@ class FindARoom(commands.Cog):
                 break
 
         if not building_name:
-            raise KeyError(f"Unknown building acronym. Please check the input: {location}.")
-  
+            raise KeyError(
+                f"Unknown building acronym. Please check the input: {location}."
+            )
+
         if (
             not room_number
             or not room_number.isdigit()
@@ -62,7 +98,7 @@ class FindARoom(commands.Cog):
         embed = discord.Embed(
             title="Room Location Found!",
             description=f"Here is the location for `{location}`:",
-            color=discord.Color.blue()
+            color=discord.Color.blue(),
         )
         embed.add_field(name="Building", value=building_name, inline=False)
         embed.add_field(name="Floor", value=f"{floor_number}", inline=True)
@@ -70,7 +106,8 @@ class FindARoom(commands.Cog):
         embed.add_field(name="Google link", value=f"{maps_link}", inline=False)
 
         embed.set_footer(
-            text="although unlikely, if this bot is incorrect please report it to us.")
+            text="although unlikely, if this bot is incorrect please report it to us."
+        )
 
         await interaction.followup.send(embed=embed)
 

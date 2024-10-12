@@ -4,8 +4,10 @@ import os
 import asyncio
 from discord.ext import commands
 from dotenv import load_dotenv
+
 bot = commands.Bot(command_prefix="!", intents=discord.Intents.all())
 load_dotenv()
+
 
 @bot.command()
 async def sync(ctx):
@@ -16,6 +18,7 @@ async def sync(ctx):
     except Exception as e:
         await ctx.send(f"An Error Occurred While Syncing: {e}")
 
+
 async def load():
     for filename in os.listdir("./cogs"):
         if filename.endswith(".py"):
@@ -25,6 +28,7 @@ async def load():
 async def main():
     async with bot:
         await load()
-        await bot.start(os.getenv('TOKEN'))
+        await bot.start(os.getenv("TOKEN"))
+
 
 asyncio.run(main())
