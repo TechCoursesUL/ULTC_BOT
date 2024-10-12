@@ -21,12 +21,12 @@ class Permissions:
             1283787573742927882,  # Admins
             1284246744800039055,  # ModerationPerms
         ],
-        "ban":  [
+        "ban": [
             1283864386305527930,  # Founders
             1283787573742927882,  # Admins
             1284246744800039055,  # ModerationPerms
         ],
-        "unban":  [
+        "unban": [
             1283864386305527930,  # Founders
             1283787573742927882,  # Admins
             1284246744800039055,  # ModerationPerms
@@ -63,17 +63,18 @@ class Permissions:
             1283864386305527930,  # Founders
             1283787573742927882,  # Admins
             1284246744800039055,  # ModerationPerms
-        ]
+        ],
     }
 
     @staticmethod
     async def _ValidatePermission(permission: str, commandUser: discord.Member) -> bool:
         if not Permissions.perms.__contains__(permission):
-            raise FileNotFoundError("Command attempted to be validated does not exist in Moderation.perms")
+            raise FileNotFoundError(
+                "Command attempted to be validated does not exist in Moderation.perms"
+            )
 
         return any(
-            discord.utils.get(commandUser.guild.roles, id=role)
-            in commandUser.roles
+            discord.utils.get(commandUser.guild.roles, id=role) in commandUser.roles
             for role in Permissions.perms[permission]
         )
 
