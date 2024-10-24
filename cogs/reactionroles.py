@@ -40,34 +40,38 @@ Annoucements (opt out): 🎉"""
 
 
     @commands.Cog.listener()
-    async def on_reaction_add(self, reaction : discord.Reaction, user):
-        if self.optOutReactions.__contains__(reaction.emoji):
-            await self.check_reaction(reaction, user, add_role=False)
+    async def on_raw_reaction_add(self, payload):
+        if self.optOutReactions.__contains__(str(payload.emoji)):
+            await self.check_reaction(payload, add_role=False)
         else:
-            await self.check_reaction(reaction, user, add_role=True)
+            await self.check_reaction(payload, add_role=True)
 
 
     @commands.Cog.listener()
-    async def on_reaction_remove(self, reaction, user):
-        if self.optOutReactions.__contains__(reaction.emoji):
-            await self.check_reaction(reaction, user, add_role=True)
+    async def on_raw_reaction_remove(self, payload):
+        if self.optOutReactions.__contains__(str(payload.emoji)):
+            await self.check_reaction(payload, add_role=True)
         else:
-            await self.check_reaction(reaction, user, add_role=False)
+            await self.check_reaction(payload, add_role=False)
 
 
-    async def check_reaction(self, reaction, user, add_role):
-        if user.bot:
+    async def check_reaction(self, payload, add_role):
+        guild = self.bot.get_guild(payload.guild_id)
+        channel = guild.get_channel(payload.channel_id)
+        member = guild.get_member(payload.user_id)
+        if channel.name != "roles":
             return
-        if reaction.emoji not in self.reactions:
+        if member.bot:
             return
-
-        role_id = self.reactions[reaction.emoji]
-        if role := discord.utils.get(reaction.message.guild.roles, id=int(role_id)):
-            if member := reaction.message.guild.get_member(user.id):
-                if add_role:
-                    await member.add_roles(role)
-                else:
-                    await member.remove_roles(role)
+        if str(payload.emoji) not in self.reactions:
+            return
+        role_id = self.reactions[str(payload.emoji)]
+        role = channel.guild.get_role(int(role_id))
+        if add_role:
+            await member.add_roles(role)
+        else:
+            await member.remove_roles(role)
+            
 
                     
 async def setup(bot):
